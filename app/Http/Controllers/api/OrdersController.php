@@ -59,9 +59,9 @@ class OrdersController extends Controller
             $order->item_id          = $item->id;
             $order->customer_data  = $validated['customer_data'];
             $order->others_data    = $validated['others'] ?? null;
-            $order->payment_method = $payments->method;
+            $order->payment_method = $payments->id;
             $order->transaction_id = $validated['transaction_id'];
-            $order->payment_number = $validated['number'];
+            $order->number = $validated['number'];
 
             if ($user) {
                 $order->user_id = $user->id;
