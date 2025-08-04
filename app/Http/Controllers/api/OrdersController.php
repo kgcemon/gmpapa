@@ -49,14 +49,14 @@ class OrdersController extends Controller
              $item = null;
          }
 
-            $itemsName = $item->name;
+
             $totalPrice = $item->price * $validated['quantity'];
 
             $order = (object) new Order();
             $order->product_id     = $product->id;
             $order->quantity       = $validated['quantity'];
             $order->total          = $totalPrice;
-            $order->items          = $itemsName;
+            $order->item_id          = $item->id;
             $order->customer_data  = $validated['customer_data'];
             $order->others_data    = $validated['others'] ?? null;
             $order->payment_method = $payments->method;

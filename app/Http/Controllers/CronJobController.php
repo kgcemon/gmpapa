@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Code;
 use App\Models\Order;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Pest\Support\Str;
 
