@@ -9,9 +9,11 @@ class WebHooksController extends Controller
 {
     public function OrderUpdate(Request $request)
     {
-        $status = $request->input('status');
-        $message = $request->input('message');
-        $uid = $request->input('uid');
+        $data = json_decode($request->getContent(), true);
+
+        $status = $data->status;
+        $message = $data->message;
+        $uid = $data->uid;
         $order = Order::where('order_note', $uid)->first();
         if ($order) {
             if ($status) {
