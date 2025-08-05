@@ -31,7 +31,7 @@ class CronJobController extends Controller
                     "denom" => "2",
                     "type" => $type,
                     "voucherCode" => $code->code,
-                    "webhook" => "https://admin.gmpapa.com/auto-webhooks"
+                    "webhook" => "https://admin.gmpapa.com/api/auto-webhooks"
                 ]);
                 $data = json_decode($response->body());
                 if ($response->successful()) {
