@@ -56,7 +56,6 @@ Route::fallback(function () {
 });
 
 Route::get('auto-top-up-cron',[CronJobController::class,'freeFireAutoTopUpJob']);
-Route::post('auto-webhooks',[WebHooksController::class,'OrderUpdate']);
 
 // Authentication Routes
 require __DIR__ . '/auth.php';

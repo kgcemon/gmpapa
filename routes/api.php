@@ -7,6 +7,7 @@ use App\Http\Controllers\api\HomePageController;
 use App\Http\Controllers\api\OrdersController;
 use App\Http\Controllers\api\PaymentMethodController;
 use App\Http\Controllers\api\ProductsController;
+use App\Http\Controllers\WebHooksController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -43,3 +44,6 @@ Route::post('add-order',[OrdersController::class, 'store']);
 //update Notice
 Route::get('notice',[HomePageController::class,'notice']);
 Route::get('help-line',[HomePageController::class,'helpLine']);
+
+//webhooks
+Route::post('auto-webhooks',[WebHooksController::class,'OrderUpdate']);
