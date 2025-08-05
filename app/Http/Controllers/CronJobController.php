@@ -43,6 +43,7 @@ class CronJobController extends Controller
                     $order->save();
                 }
             }
+            return 'Cron job run successfully';
         }catch (\Exception $exception){
             return $exception->getMessage();
         }
