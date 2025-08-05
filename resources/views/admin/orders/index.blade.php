@@ -67,6 +67,7 @@
                                     <img src="{{ asset($order->product->image ?? 'default.png') }}" alt="Product Image" width="40" height="40" style="object-fit: cover; border-radius: 8px;">
                                     <div>
                                         <strong>{{ $order->product->name ?? 'N/A' }}</strong><br>
+                                        <small>{{$order->product->items[0]['name'] ?? ''}}</small>
                                         <small>{{ $order->order_note }}</small>
                                     </div>
                                 </td>
@@ -80,7 +81,7 @@
                                 <td class="d-flex align-items-start gap-3">
                                     <img src="{{ asset($order->paymentMethod->icon ?? 'default.png') }}" alt="Payment Icon" width="40" height="40" style="object-fit: cover; border-radius: 8px;">
                                     <div>
-                                        <strong>{{ $order->payment_number }}</strong><br>
+                                        <strong>{{ $order->number }}</strong><br>
                                         <small>{{ $order->transaction_id }}</small>
                                     </div>
                                 </td>
