@@ -28,6 +28,7 @@ return new class extends Migration
             $table->unsignedInteger('payment_method');
             $table->string('transaction_id')->unique()->nullable();
             $table->string('number')->nullable();
+            $table->string('uid')->unique()->nullable();
             $table->timestamps();
         });
     }

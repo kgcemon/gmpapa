@@ -28,7 +28,7 @@
             @foreach($sliders as $slider)
                 <tr>
                     <td>{{ $slider->id }}</td>
-                    <td><img src="{{ asset('storage/' . $slider->images_url) }}" width="60" alt=""></td>
+                    <td><img src="{{ url("$slider->images_url") }}" width="60" alt=""></td>
                     <td>{{ $slider->link }}</td>
                     <td>
                         <!-- Edit -->

@@ -67,7 +67,7 @@ class ProductController extends Controller
 
             return redirect()->route('admin.products.index')->with('success', 'Product Added Successfully.');
         }catch (\Exception $exception){
-            return back()->with('error', $exception->getMessage());
+            return back()->with('error', $exception->getMessage())->withInput();
         }
     }
 

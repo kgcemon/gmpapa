@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\Categorie;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class CategoriesController extends Controller
@@ -33,7 +34,7 @@ class CategoriesController extends Controller
         $path = $request->file('thumbnail')?->store('categories', 'public');
 
         Categorie::create([
-            'thumbnail' => "app/public/$path",
+            'thumbnail' => $path,
             'name' => $request->name,
             'slug' => Str::slug($request->name),
             'description' => $request->description,
@@ -50,24 +51,33 @@ class CategoriesController extends Controller
 
     public function update(Request $request, Categorie $category)
     {
-        $request->validate([
-            'thumbnail' => 'nullable|image',
-            'name' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
-            'sort' => 'required|integer',
-        ]);
+        try {
+            // Validate inputs
+            $validated = $request->validate([
+                'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'name' => 'required|string|max:255',
+                'description' => 'nullable|string|max:255',
+                'sort' => 'required|integer',
+            ]);
 
-        $path = $request->file('thumbnail')?->store('categories', 'public');
+            if ($request->hasFile('thumbnail')) {
+                if ($category->thumbnail && Storage::disk('public')->exists($category->thumbnail)) {
+                    Storage::disk('public')->delete($category->thumbnail);
+                }
 
-        $category->update([
-            'thumbnail' => $path ?? $category->thumbnail,
-            'name' => $request->name,
-            'slug' => Str::slug($request->name),
-            'description' => $request->description,
-            'sort' => $request->sort,
-        ]);
+                $validated['thumbnail'] = $request->file('thumbnail')->store('categories', 'public');
+            } else {
+                $validated['thumbnail'] = $category->thumbnail;
+            }
 
-        return back()->with('success', 'Category updated.');
+            $validated['slug'] = Str::slug($validated['name']);
+
+            $category->update($validated);
+
+            return back()->with('success', 'Category updated successfully.');
+        }catch (\Exception $exception){
+            return back()->with('error', $exception->getMessage());
+        }
     }
 
     public function destroy(Categorie $category)

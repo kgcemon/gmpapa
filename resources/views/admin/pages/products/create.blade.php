@@ -8,6 +8,7 @@
                 <a href="{{ route('admin.products.index') }}" class="btn btn-secondary btn-sm">Back to List</a>
             </div>
             <div class="card-body">
+                {{-- Alert messages --}}
                 @if ($errors->any())
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         <strong>Whoops!</strong> Please correct the following errors:
@@ -34,11 +35,10 @@
                     </div>
                 @endif
 
-
                 <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
-
                     <div class="row g-3">
+                        {{-- Category --}}
                         <div class="col-md-6">
                             <label>Category <span class="text-danger">*</span></label>
                             <select name="category_id" class="form-select @error('category_id') is-invalid @enderror" required>
@@ -47,81 +47,76 @@
                                     <option value="{{ $cat->id }}" {{ old('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
                                 @endforeach
                             </select>
-                            @error('category_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            @error('category_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
+                        {{-- Name --}}
                         <div class="col-md-6">
                             <label>Name <span class="text-danger">*</span></label>
-                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required>
-                            @error('name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="text" name="name" id="nameInput" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required>
+                            @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
+                        {{-- Slug --}}
                         <div class="col-md-6">
-                            <label>Slug <span class="text-danger">*</span></label>
-                            <input type="text" name="slug" class="form-control @error('slug') is-invalid @enderror" value="{{ old('slug') }}" required>
-                            @error('slug')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <label>Slug <span class="text-danger">*</span> <small>(auto-filled, editable)</small></label>
+                            <input type="text" name="slug" id="slugInput" class="form-control @error('slug') is-invalid @enderror" value="{{ old('slug') }}" required>
+                            @error('slug') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
+                        {{-- Short Description --}}
                         <div class="col-md-6">
                             <label>Short Description</label>
                             <input type="text" name="short_description" class="form-control @error('short_description') is-invalid @enderror" value="{{ old('short_description') }}">
-                            @error('short_description')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            @error('short_description') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
-                        <div class="col-md-6">
-                            <label>Tags (comma-separated)</label>
-                            <input type="text" name="tags" class="form-control @error('tags') is-invalid @enderror" value="{{ old('tags') }}">
-                            @error('tags')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                        {{-- SEO Section --}}
+                        <div class="col-md-12">
+                            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#seoSection" aria-expanded="false" aria-controls="seoSection">
+                                <strong>SEO Settings (optional)</strong>
+                            </button>
+                            <div class="collapse" id="seoSection">
+                                <div class="card card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Tags <small class="text-muted">(comma-separated)</small></label>
+                                            <input type="text" name="tags" class="form-control @error('tags') is-invalid @enderror" value="{{ old('tags') }}">
+                                            @error('tags') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>SEO Keywords</label>
+                                            <input type="text" name="keywords" class="form-control @error('keywords') is-invalid @enderror" value="{{ old('keywords') }}">
+                                            @error('keywords') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="col-md-6">
-                            <label>Keywords</label>
-                            <input type="text" name="keywords" class="form-control @error('keywords') is-invalid @enderror" value="{{ old('keywords') }}">
-                            @error('keywords')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
+                        {{-- Input Fields --}}
                         <div class="col-md-6">
                             <label>Input Name <span class="text-danger">*</span></label>
                             <input type="text" name="input_name" class="form-control @error('input_name') is-invalid @enderror" value="{{ old('input_name') }}" required>
-                            @error('input_name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            @error('input_name') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
                         <div class="col-md-6">
                             <label>Input Others</label>
                             <input type="text" name="input_others" class="form-control @error('input_others') is-invalid @enderror" value="{{ old('input_others') }}">
-                            @error('input_others')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            @error('input_others') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
                         <div class="col-md-4">
                             <label>Total Inputs</label>
                             <input type="number" name="total_input" value="{{ old('total_input', 1) }}" class="form-control @error('total_input') is-invalid @enderror" required>
-                            @error('total_input')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            @error('total_input') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
                         <div class="col-md-4">
                             <label>Sort</label>
                             <input type="number" name="sort" class="form-control @error('sort') is-invalid @enderror" value="{{ old('sort') }}">
-                            @error('sort')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            @error('sort') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
                         <div class="col-md-4">
@@ -130,34 +125,27 @@
                                 <option value="1" {{ old('stock', 1) == 1 ? 'selected' : '' }}>In Stock</option>
                                 <option value="0" {{ old('stock', 1) == 0 ? 'selected' : '' }}>Out of Stock</option>
                             </select>
-                            @error('stock')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            @error('stock') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
+                        {{-- Images --}}
                         <div class="col-md-6">
                             <label>Image <span class="text-danger">*</span></label>
                             <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" required>
-                            @error('image')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            @error('image') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
                         <div class="col-md-6">
                             <label>Cover Image <span class="text-danger">*</span></label>
                             <input type="file" name="cover_image" class="form-control @error('cover_image') is-invalid @enderror" required>
-                            @error('cover_image')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            @error('cover_image') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
+                        {{-- Description --}}
                         <div class="col-md-12">
                             <label>Description</label>
-                            {{-- Add an ID to the textarea for TinyMCE --}}
                             <textarea name="description" id="description_editor" class="form-control @error('description') is-invalid @enderror" rows="4">{{ old('description') }}</textarea>
-                            @error('description')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            @error('description') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                     </div>
 
@@ -168,21 +156,47 @@
             </div>
         </div>
     </div>
-
 @endsection
 
 @push('scripts')
-    {{-- TinyMCE CDN --}}
     <script src="https://cdn.tiny.cloud/1/rx33nh9mrg7zvtjoq6t8vd2ddu0l67uiw9stt1scrdjlb1dh/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 
     <script>
         tinymce.init({
-            selector: '#description_editor', // Target the textarea by its ID
+            selector: '#description_editor',
             plugins: 'advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount',
             toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
-            height: 300, // Adjust height as needed
-            // You can add more options here, e.g., for image upload handling
-            // file_picker_callback: function (cb, value, meta) { ... }
+            height: 300,
+        });
+
+        const nameInput = document.getElementById('nameInput');
+        const slugInput = document.getElementById('slugInput');
+        let manualSlugEdit = false;
+
+        slugInput.addEventListener('input', () => manualSlugEdit = true);
+
+        function slugify(text) {
+            return text.toString().toLowerCase()
+                .replace(/[^\w\s-]/g, '')
+                .trim()
+                .replace(/\s+/g, '-')
+                .replace(/--+/g, '-');
+        }
+
+        function updateSlug() {
+            const base = slugify(nameInput.value);
+            slugInput.value = base;
+        }
+
+        nameInput.addEventListener('input', () => {
+            if (!manualSlugEdit) updateSlug();
+        });
+
+        // Initial slug update on page load if name already filled
+        document.addEventListener('DOMContentLoaded', () => {
+            if (nameInput.value && !slugInput.value) {
+                updateSlug();
+            }
         });
     </script>
 @endpush

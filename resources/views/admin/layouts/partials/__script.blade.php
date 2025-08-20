@@ -10,12 +10,14 @@
 		});
 	</script>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
 
 
     <!--   Core JS Files   -->
 	<script src="{{asset('assets/admin/js/core/jquery-3.7.1.min.js')}}"></script>
+	<script src="{{asset('assets/admin/js/core/sweet-alert.js')}}"></script>
+	<script src="{{asset('assets/admin/js/core/jquery.js')}}"></script>
+	<script src="{{asset('assets/admin/js/core/bootstrapMain.js')}}"></script>
 	<script src="{{asset('assets/admin/js/core/popper.min.js')}}"></script>
 	<script src="{{asset('assets/admin/js/core/bootstrap.min.js')}}"></script>
 

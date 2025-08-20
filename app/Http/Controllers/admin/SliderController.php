@@ -26,7 +26,7 @@ class SliderController extends Controller
 
         SliderImages::create([
             'link' => $request->link,
-            'images_url' => "app/public/$path",
+            'images_url' => "storage/$path",
         ]);
 
         return back()->with('success', 'Slider added successfully.');

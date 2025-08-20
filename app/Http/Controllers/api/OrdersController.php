@@ -48,10 +48,7 @@ class OrdersController extends Controller
          }else{
              $item = null;
          }
-
-
             $totalPrice = $item->price * $validated['quantity'];
-
             $order = (object) new Order();
             $order->product_id     = $product->id;
             $order->quantity       = $validated['quantity'];

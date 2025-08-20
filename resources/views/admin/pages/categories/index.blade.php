@@ -106,7 +106,7 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>
                                 @if($category->thumbnail)
-                                    <img src="{{ asset('storage/' . $category->thumbnail) }}" alt="Thumbnail" class="rounded" width="60" height="60" style="object-fit: cover;">
+                                    <img src="{{ url("storage/$category->thumbnail") }}" alt="Thumbnail" class="rounded" width="60" height="60" style="object-fit: cover;">
                                 @else
                                     <span class="text-muted">No Image</span>
                                 @endif

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\api\auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Google_Client;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -63,6 +65,46 @@ class AuthController extends Controller
                 'status' => false,
                 'message' => $exception->getMessage(),
             ]);
+        }
+    }
+
+    public function loginWithGoogleToken(Request $request): JsonResponse
+    {
+        $idToken = $request->input('token');
+        $client = new Google_Client(['client_id' => env('GOOGLE_CLIENT_ID')]);
+        try {
+            $payload = $client->verifyIdToken($idToken);
+            if ($payload) {
+                $name = $payload['name'];
+                $email = $payload['email'];
+                $avatar = $payload['picture'];
+
+                $user = User::firstOrCreate(
+                    ['email' => $email],
+                    [
+                        'name' => $name,
+                        'email' => $email,
+                        'image' => $avatar,
+                        'password' => random_int(10000, 99999),
+                    ]
+                );
+
+                $token = $user->createToken('API Token')->plainTextToken;
+
+                return response()->json([
+                    'error' => false,
+                    'message' => 'Login successful',
+                    'token' => $token,
+                    'user' => $user,
+                ]);
+            } else {
+                // Invalid token
+                return response()->json(['error' => true], 400);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+                'error' => true], 400);
         }
     }
 
