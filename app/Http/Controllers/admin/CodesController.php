@@ -1,0 +1,104 @@
+<?php
+
+namespace App\Http\Controllers\admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Categorie;
+use App\Models\Code;
+use App\Models\Item;
+use App\Models\Product;
+use Illuminate\Http\Request;
+
+class CodesController extends Controller
+{
+    // Show all products
+    public function index()
+    {
+        $products = Product::with('items')->orderby('sort')->paginate(10);
+        return view('admin.pages.codes.index', compact('products'));
+    }
+
+    // Show the create form
+    public function create()
+    {
+        $categories = Categorie::all();
+        return view('admin.pages.products.create', compact('categories'));
+    }
+
+    // Store the new
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'codes' => 'required|string',
+            'product_id' => 'required',
+            'item_id' => 'required',
+        ]);
+
+        try {
+            $lines = preg_split('/\r\n|\r|\n/', $validatedData['codes']);
+
+            foreach ($lines as $line) {
+                $code = trim($line);
+
+                if (!empty($code)) {
+                    Code::create([
+                        'product_id' => $request->input('product_id'),
+                        'item_id' => $request->input('item_id'),
+                        'code' => $code,
+                    ]);
+                }
+            }
+        }catch (\Exception $exception){
+            return $exception->getMessage();
+        }
+
+        return back()->with('success', 'Codes added successfully.');
+    }
+
+    public function show($id)
+    {
+        $unusedCodesCountPerVariant = Code::where('status', 'unused')
+            ->selectRaw('item_id, COUNT(*) as total_unused')
+            ->groupBy('item_id')
+            ->with('variant') // loads related Item model (id, name)
+            ->get();
+        $codes = Code::where('product_id', $id)->paginate(5);
+        $product = Product::where('id', $id)->first() ?? '';
+        return view('admin.pages.codes.codes', compact('codes', 'product','unusedCodesCountPerVariant'));
+    }
+
+
+    // Show the edit form
+    public function edit($id)
+    {
+    }
+
+    // Update the product
+    public function update(Request $request, $id)
+    {
+        $code = Code::findOrFail($id);
+
+        $request->validate([
+            'item_id' => 'required|numeric',
+            'code' => 'sometimes|nullable|string',
+        ]);
+        // Update fields
+        $code->update([
+            'code' => $request->input('code'),
+            'item_id' => $request->input('item_id'),
+        ]);
+
+        return back()->with('success', 'Product updated successfully.');
+    }
+
+    // Delete the product
+    public function destroy($id)
+    {
+        $product = Code::findOrFail($id);
+
+        $product->delete();
+
+        return redirect()->back()->with('success', 'Product deleted successfully.');
+    }
+
+}
