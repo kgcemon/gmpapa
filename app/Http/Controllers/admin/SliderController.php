@@ -22,15 +22,21 @@ class SliderController extends Controller
             'images_url' => 'required|image|mimes:jpeg,png,jpg,webp',
         ]);
 
+        // ✅ File store
         $path = $request->file('images_url')->store('sliders', 'public');
 
+        // ✅ Full URL generate
+        $fullUrl = url("storage/" . $path);
+
+        // ✅ Save to DB
         SliderImages::create([
             'link' => $request->link,
-            'images_url' => "storage/$path",
+            'images_url' => $fullUrl,
         ]);
 
         return back()->with('success', 'Slider added successfully.');
     }
+
 
     public function update(Request $request, $id)
     {
