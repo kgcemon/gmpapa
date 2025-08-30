@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\admin\PaymentSMSController;
 use App\Http\Controllers\api\auth\AuthController;
 use App\Http\Controllers\api\auth\UserOrderController;
 use App\Http\Controllers\api\CategoriesController;
@@ -24,7 +25,7 @@ Route::post('profile-update',[AuthController::class,'profileUpdate'])->middlewar
 
 //login register
 Route::post('register', [AuthController::class, 'register']);
-Route::post('login', [AuthController::class, 'loginWithGoogleToken']);
+Route::post('login', [AuthController::class, 'login']);
 
 
 //product
@@ -49,3 +50,4 @@ Route::get('help-line',[HomePageController::class,'helpLine']);
 
 //webhooks
 Route::post('auto-webhooks',[WebHooksController::class,'OrderUpdate']);
+Route::get('sms',[PaymentSMSController::class, 'SmsWhooks']);

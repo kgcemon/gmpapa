@@ -14,7 +14,7 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 class DashboardController extends Controller
 {
     public function index(){
-
+        $orders = Order::limit(10)->orderBy('created_at', 'desc')->get();
         $dashboardData = Cache::remember('dashboardData', 60, function () {
             return [
                 "todayOrder" => Order::whereDate('created_at', today())->count(),
@@ -30,6 +30,6 @@ class DashboardController extends Controller
             ];
         });
 
-        return view('admin.dashboard', compact('dashboardData'));
+        return view('admin.dashboard', compact('dashboardData','orders'));
     }
 }

@@ -4,8 +4,8 @@
     <div class="container mt-4">
         <div class="card shadow-sm border-0">
             <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white">
-                <h5 class="mb-0">Orders</h5>
-                <form action="{{ route('admin.orders.index') }}" method="GET" class="d-flex" style="gap: 8px;">
+                <h5 class="mb-0">Payment SMS</h5>
+                <form action="{{ route('admin.sms-search') }}" method="GET" class="d-flex" style="gap: 8px;">
                     <input type="text" name="search" value="{{ request('search') }}"
                            class="form-control form-control-sm"
                            placeholder="Search by TrxID or Number">
@@ -34,7 +34,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @forelse($orders as $order)
+                    @forelse($data as $order)
                         <tr>
                             <td>{{ $loop->iteration + ($orders->currentPage() - 1) * $orders->perPage() }}</td>
                             <td>{{ $order->order_number }}</td>
@@ -65,7 +65,7 @@
                 </table>
 
                 <div class="mt-3">
-                    {{ $orders->withQueryString()->links() }}
+                    {{ $data->withQueryString()->links() }}
                 </div>
             </div>
         </div>

@@ -37,7 +37,6 @@ class SliderController extends Controller
         return back()->with('success', 'Slider added successfully.');
     }
 
-
     public function update(Request $request, $id)
     {
         try {

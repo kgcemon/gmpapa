@@ -158,6 +158,12 @@
                         <p>Slider Image</p>
                     </a>
                 </li>
+                <li class="nav-item {{ request()->is('admin/payment-sms') ? 'active' : '' }}">
+                    <a href="/admin/payment-sms">
+                        <i class="fas fa-money-check"></i>
+                        <p>Store SMS</p>
+                    </a>
+                </li>
                 <li class="nav-item {{ request()->is('admin/users') ? 'active' : '' }}">
                     <a href="/admin/users">
                         <i class="fas fa-user"></i>
@@ -174,7 +180,7 @@
                     </a>
                     <div class="collapse" id="settings">
                         <ul class="nav nav-collapse">
-                            <li><a href="/holidays"><span class="sub-item {{ Str::contains(request()->path(), 'holidays') ? 'active' : '' }}">Notification Setting</span></a></li>
+                            <li><a href="/admin/payment-methods"><span class="sub-item {{ Str::contains(request()->path(), 'payment-methods') ? 'active' : '' }}">Payment Setting</span></a></li>
                             <li><a href="/withdraws/settings"><span class="sub-item">Site Settings</span></a></li>
                             <li><a href="/admin/settings/referral"><span class="sub-item">SEO Settings</span></a></li>
                         </ul>

@@ -75,5 +75,58 @@
             </div>
         </div>
 
+
+        <!-- recent Order -->
+        <div class="card shadow-sm mb-4 border-0">
+            <div class="card-body">
+                <h5 class="card-title fw-bold mb-4">Recent Orders</h5>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped align-middle text-center">
+                <thead class="table-dark">
+                <tr>
+                    <th>Customer</th>
+                    <th>Product</th>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Total (৳)</th>
+                    <th>Status</th>
+                    <th>TrxID</th>
+                    <th>Placed</th>
+                </tr>
+                </thead>
+                <tbody>
+                @forelse($orders as $order)
+                    <tr>
+                        <td>{{ $order->name }}</td>
+                        <td>{{ $order->product->name }}</td>
+                        <td>{{ $order->item->name }}</td>
+                        <td>{{ $order->quantity }}</td>
+                        <td class="text-bg-info">{{ number_format($order->total, 2) }}৳</td>
+                        <td>
+                            @php
+                                $statusClass = match($order->status) {
+                                    'hold' => 'badge bg-warning',
+                                    'processing' => 'badge bg-success',
+                                    'cancelled' => 'badge bg-danger',
+                                    default => 'badge bg-secondary',
+                                };
+                            @endphp
+                            <span class="{{ $statusClass }}">{{ ucfirst($order->status) }}</span>
+                        </td>
+                        <td>{{ $order->transaction_id ?? '-' }}</td>
+                        <td>{{ $order->created_at ? $order->created_at->diffForHumans() : 'N/A' }}</td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="13" class="text-center py-4">No orders found.</td>
+                    </tr>
+                @endforelse
+                </tbody>
+            </table>
+        </div>
+        </div>
+        </div>
+
+
     </div>
 @endsection

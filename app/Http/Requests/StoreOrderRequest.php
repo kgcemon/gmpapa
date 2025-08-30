@@ -22,8 +22,8 @@ class StoreOrderRequest extends FormRequest
             'customer_data'  => 'required|string|max:255',
             'others'         => 'nullable|string',
             'method_id'      => 'required|integer',
-            'number'         => 'required|string|min:1|max:13',
-            'transaction_id' => 'required|string|max:14|unique:orders,transaction_id',
+            'number'         => 'nullable|string|min:1|max:13',
+            'transaction_id' => 'nullable|string|max:14|unique:orders,transaction_id',
         ];
     }
 
@@ -51,8 +51,6 @@ class StoreOrderRequest extends FormRequest
             'quantity.integer'        => 'পরিমাণ একটি সংখ্যা হতে হবে।',
             'customer_data.required'  => 'গ্রাহকের তথ্য দিতে হবে।',
             'method_id.required'      => 'পেমেন্ট মেথড নির্বাচন করতে হবে।',
-            'number.required'         => 'নম্বর দিতে হবে।',
-            'transaction_id.required' => 'লেনদেন আইডি দিতে হবে।',
             'transaction_id.unique'   => 'এই লেনদেন আইডি ইতিমধ্যে ব্যবহার করা হয়েছে।',
         ];
     }
