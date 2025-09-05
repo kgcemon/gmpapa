@@ -59,7 +59,7 @@ class OrdersController extends Controller
             $totalPrice = $item ? $item->price * $validated['quantity'] : $product->price * $validated['quantity'];
 
 
-            if ($payments->method === 'wallet' && $user) {
+            if ($payments->method == 'Wallet' && $user) {
                 $deducted = $this->walletService->deductBalance($user, $totalPrice);
                 if (!$deducted) {
                     return response()->json([
