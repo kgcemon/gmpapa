@@ -25,7 +25,7 @@ Route::post('profile-update',[AuthController::class,'profileUpdate'])->middlewar
 
 //login register
 Route::post('register', [AuthController::class, 'register']);
-Route::post('login', [AuthController::class, 'login']);
+Route::post('login', [AuthController::class, 'loginWithGoogleToken']);
 
 
 //product
