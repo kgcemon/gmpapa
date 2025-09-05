@@ -76,8 +76,9 @@ class SocialLinkController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(HelpLine $helpline)
+    public function destroy($id)
     {
+        $helpline = HelpLine::where('id', $id)->first();
         if ($helpline->image && file_exists(public_path($helpline->image))) {
             unlink(public_path($helpline->image));
         }
