@@ -46,13 +46,15 @@ class SocialLinkController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, HelpLine $helpline)
+    public function update($id, Request $request)
     {
         $request->validate([
             'name'  => 'required|string|max:255',
             'url'   => 'required|url',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+        $helpline = HelpLine::where('id', $id)->first();
 
         try {
             if ($request->hasFile('image')) {
