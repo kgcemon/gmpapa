@@ -10,7 +10,7 @@ class PaymentMethodController extends Controller
 {
     public function index(Request $request){
         $user = $request->user();
-        if (!$user){
+        if ($user){
             $payment_methods = PaymentMethod::all();
         }else{
             $payment_methods = PaymentMethod::where('method', '!=', 'Wallet')->get();
