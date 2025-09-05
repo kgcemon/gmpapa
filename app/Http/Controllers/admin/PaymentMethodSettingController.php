@@ -46,8 +46,6 @@ class PaymentMethodSettingController extends Controller
         return back()->with('success', 'Payment method added successfully!');
     }
 
-    // ✅ Update Payment Method
-    use Illuminate\Support\Facades\Storage;
 
     public function update(Request $request, $id)
     {
