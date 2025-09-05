@@ -67,7 +67,7 @@ Route::middleware('auth')->prefix('admin')->as('admin.')->group(function () {
 
 
     //Social
-    Route::resource('social-links', SocialLinkController::class, ['as' => 'admin']);
+    Route::resource('social-links', SocialLinkController::class);
 
 });
 
