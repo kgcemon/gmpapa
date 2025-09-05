@@ -64,6 +64,10 @@ Route::middleware('auth')->prefix('admin')->as('admin.')->group(function () {
     Route::get('payment-sms',[PaymentSMSController::class, 'index'])->name('payment-sms');
     Route::get('payment-sms',[PaymentSMSController::class, 'search'])->name('sms-search');
 
+
+    //Social
+    Route::resource('social-links', SocialLinkController::class, ['as' => 'admin']);
+
 });
 
 // Fallback Route for 404
