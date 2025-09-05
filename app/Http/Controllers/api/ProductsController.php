@@ -11,7 +11,7 @@ class ProductsController extends Controller
 {
     public function index(){
 
-        $products = Categorie::with('products')->where('method', '!=', 'Wallet')->select('name','id')->orderBy('sort')->paginate(50);
+        $products = Categorie::with('products')->where('name', '!=', 'Wallet')->select('name','id')->orderBy('sort')->paginate(50);
         return response()->json([
             'status' => true,
             'data' => $products->items(),
