@@ -160,8 +160,8 @@
                     </div>
                     <div class="modal-body row g-3">
                         <div class="col-md-6">
-                            <label class="form-label">Icon URL</label>
-                            <input type="text" name="icon" class="form-control" required>
+                            <label class="form-label">Icon</label>
+                            <input type="file" name="icon" class="form-control" required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Method</label>
