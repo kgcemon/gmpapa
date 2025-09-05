@@ -18,7 +18,7 @@ class Categorie extends Model
     public function products()
     {
         return $this->hasMany(Product::class,
-            'category_id')->where('stock', '=', 1)
+            'category_id')->where('name', '!=', 'Wallet')->where('stock', '=', 1)
             ->select('id', 'name', 'image', 'slug', 'category_id')->orderBy('sort');
     }
 }
