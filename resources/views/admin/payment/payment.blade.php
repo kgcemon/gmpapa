@@ -76,7 +76,7 @@
                             <div class="modal fade" id="editMethodModal{{ $method->id }}" tabindex="-1" aria-hidden="true">
                                 <div class="modal-dialog modal-lg modal-dialog-centered">
                                     <div class="modal-content">
-                                        <form action="{{ route('admin.payment-methods.update', $method->id) }}" method="POST">
+                                        <form action="{{ route('admin.payment-methods.update', $method->id) }}" method="POST" enctype="multipart/form-data">
                                             @csrf
                                             @method('PUT')
                                             <div class="modal-header bg-warning text-dark">
@@ -85,8 +85,8 @@
                                             </div>
                                             <div class="modal-body row g-3">
                                                 <div class="col-md-6">
-                                                    <label class="form-label">Icon URL</label>
-                                                    <input type="text" name="icon" class="form-control" value="{{ $method->icon }}">
+                                                    <label class="form-label">Icon</label>
+                                                    <input type="file" name="icon" class="form-control" value="{{ $method->icon }}">
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label class="form-label">Method</label>
@@ -152,7 +152,9 @@
     <div class="modal fade" id="addMethodModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
-                <form action="{{ route('admin.payment-methods.store') }}" method="POST">
+                <form action="{{ route('admin.payment-methods.store') }}"
+                      method="POST"
+                      enctype="multipart/form-data"> <!-- এখানে যুক্ত করা হলো -->
                     @csrf
                     <div class="modal-header bg-primary text-white">
                         <h5 class="modal-title">Add Payment Method</h5>
@@ -191,6 +193,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- JS for Copy -->
     <script>
