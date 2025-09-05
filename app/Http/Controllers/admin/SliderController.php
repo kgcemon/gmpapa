@@ -31,7 +31,7 @@ class SliderController extends Controller
         // ✅ Save to DB
         SliderImages::create([
             'link' => $request->link,
-            'images_url' => $fullUrl,
+            'images_url' => asset($fullUrl),
         ]);
 
         return back()->with('success', 'Slider added successfully.');
@@ -52,7 +52,7 @@ class SliderController extends Controller
                 $slider->images_url = 'storage/'.$request->file('images_url')->store('sliders', 'public');
             }
 
-            $slider->link = $request->link;
+            $slider->link = asset($request->link);
             $slider->save();
 
             return back()->with('success', 'Slider updated successfully.');
