@@ -27,17 +27,20 @@ class SocialLinkController extends Controller
             'url'   => 'required|url',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+        try {
+            // upload image
+            $path = $request->file('image')->store('uploads/helplines', 'public');
 
-        // upload image
-        $path = $request->file('image')->store('uploads/helplines', 'public');
+            HelpLine::create([
+                'name'  => $request->name,
+                'url'   => $request->url,
+                'image' => asset('storage/' . $path),
+            ]);
 
-        HelpLine::create([
-            'name'  => $request->name,
-            'url'   => $request->url,
-            'image' => 'storage/' . $path,
-        ]);
-
-        return redirect()->back()->with('success', 'HelpLine added successfully.');
+            return redirect()->back()->with('success', 'HelpLine added successfully.');
+        }catch (\Exception $exception){
+            return back()->with('error', $exception->getMessage());
+        }
     }
 
     /**
@@ -51,19 +54,23 @@ class SocialLinkController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        if ($request->hasFile('image')) {
-            if ($helpline->image && file_exists(public_path($helpline->image))) {
-                unlink(public_path($helpline->image));
+        try {
+            if ($request->hasFile('image')) {
+                if ($helpline->image && file_exists(public_path($helpline->image))) {
+                    unlink(public_path($helpline->image));
+                }
+                $path = $request->file('image')->store('uploads/helplines', 'public');
+                $helpline->image = asset('storage/' . $path);
             }
-            $path = $request->file('image')->store('uploads/helplines', 'public');
-            $helpline->image = 'storage/' . $path;
+
+            $helpline->name = $request->name;
+            $helpline->url  = $request->url;
+            $helpline->save();
+
+            return redirect()->back()->with('success', 'HelpLine updated successfully.');
+        }catch (\Exception $exception){
+            return back()->with('error', $exception->getMessage());
         }
-
-        $helpline->name = $request->name;
-        $helpline->url  = $request->url;
-        $helpline->save();
-
-        return redirect()->back()->with('success', 'HelpLine updated successfully.');
     }
 
     /**
