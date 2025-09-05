@@ -4,6 +4,7 @@ use App\Http\Controllers\admin\PaymentSMSController;
 use App\Http\Controllers\api\auth\AuthController;
 use App\Http\Controllers\api\auth\UserOrderController;
 use App\Http\Controllers\api\CategoriesController;
+use App\Http\Controllers\api\DepositController;
 use App\Http\Controllers\api\HomePageController;
 use App\Http\Controllers\api\OrdersController;
 use App\Http\Controllers\api\PaymentMethodController;
@@ -21,6 +22,8 @@ Route::get('my-orders',[UserOrderController::class,'userOrder'])->middleware('au
 Route::get('my-profile',[AuthController::class,'user'])->middleware('auth:sanctum');
 Route::post('mobile-number-update',[AuthController::class,'mobileNumberUpdate'])->middleware('auth:sanctum');
 Route::post('profile-update',[AuthController::class,'profileUpdate'])->middleware('auth:sanctum');
+Route::post('profile-update',[AuthController::class,'profileUpdate'])->middleware('auth:sanctum');
+Route::post('add-money',[DepositController::class, 'depositStore'])->middleware('auth:sanctum');
 
 
 //login register
@@ -47,6 +50,8 @@ Route::post('add-order',[OrdersController::class, 'store']);
 //update Notice
 Route::get('notice',[HomePageController::class,'notice']);
 Route::get('help-line',[HomePageController::class,'helpLine']);
+
+
 
 //webhooks
 Route::post('auto-webhooks',[WebHooksController::class,'OrderUpdate']);

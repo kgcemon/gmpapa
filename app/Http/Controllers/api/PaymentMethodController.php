@@ -8,8 +8,14 @@ use Illuminate\Http\Request;
 
 class PaymentMethodController extends Controller
 {
-    public function index(){
-        $payment_methods = PaymentMethod::all();
+    public function index(Request $request){
+        $user = $request->user();
+        if ($user){
+            $payment_methods = PaymentMethod::all();
+        }else{
+            $payment_methods = PaymentMethod::where('method', '!=', 'Wallet')->get();
+        }
+
         return response()->json([
             'status' => true,
             'data' => $payment_methods,
