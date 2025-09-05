@@ -26,24 +26,28 @@ class PaymentMethodSettingController extends Controller
             'number' => 'required|string|max:50',
         ]);
 
-        $iconUrl = null;
-        if ($request->hasFile('icon')) {
-            // ফাইলকে storage/app/public/payment_methods এ সেভ করবে
-            $path = $request->file('icon')->store('payment_methods', 'public');
+        try {
+            $iconUrl = null;
+            if ($request->hasFile('icon')) {
+                // ফাইলকে storage/app/public/payment_methods এ সেভ করবে
+                $path = $request->file('icon')->store('payment_methods', 'public');
 
-            // full URL তৈরি হবে
-            $iconUrl = asset('storage/' . $path);
+                // full URL তৈরি হবে
+                $iconUrl = asset('storage/' . $path);
+            }
+
+            PaymentMethod::create([
+                'icon' => $iconUrl, // এখানে full URL save হবে
+                'method' => $request->input('method'),
+                'description' => $request->input('description'),
+                'number' => $request->input('number'),
+                'status' => 1,
+            ]);
+
+            return back()->with('success', 'Payment method added successfully!');
+        }catch (\Exception $exception){
+            return back()->with('error', $exception->getMessage());
         }
-
-        PaymentMethod::create([
-            'icon' => $iconUrl, // এখানে full URL save হবে
-            'method' => $request->input('method'),
-            'description' => $request->input('description'),
-            'number' => $request->input('number'),
-            'status' => 1,
-        ]);
-
-        return back()->with('success', 'Payment method added successfully!');
     }
 
 
