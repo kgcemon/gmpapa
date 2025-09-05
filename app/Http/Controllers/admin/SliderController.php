@@ -49,7 +49,7 @@ class SliderController extends Controller
 
             if ($request->hasFile('images_url')) {
                 File::delete(public_path('storage/' . $slider->image));
-                $slider->images_url = $request->file('images_url')->store('sliders', 'public');
+                $slider->images_url = 'storage/'.$request->file('images_url')->store('sliders', 'public');
             }
 
             $slider->link = $request->link;
