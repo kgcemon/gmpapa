@@ -8,6 +8,7 @@ use App\Models\Item;
 use App\Models\Order;
 use App\Models\PaymentMethod;
 use App\Models\Product;
+use App\Models\WalletTransaction;
 use App\Services\WalletService;
 use Illuminate\Support\Facades\Cache;
 
@@ -66,6 +67,14 @@ class OrdersController extends Controller
                         'message' => 'Insufficient wallet balance',
                     ], 400);
                 }
+                WalletTransaction::create([
+                    'user_id'   => $user->id,
+                    'amount'    => $totalPrice,
+                    'type'      => 'debit',
+                    'description' => 'order'. $item->name ?? '',
+                    'status'    => 1,
+                ]);
+
                 $status = 'processing';
             }
 
