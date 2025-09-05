@@ -8,6 +8,7 @@ use App\Http\Controllers\admin\PaymentMethodSettingController;
 use App\Http\Controllers\admin\PaymentSMSController;
 use App\Http\Controllers\admin\ProductController;
 use App\Http\Controllers\admin\SliderController;
+use App\Http\Controllers\admin\SocialLinkController;
 use App\Http\Controllers\admin\UsersController;
 use App\Http\Controllers\admin\VariantController;
 use App\Http\Controllers\CronJobController;
