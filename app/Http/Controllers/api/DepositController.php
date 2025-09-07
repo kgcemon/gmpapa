@@ -13,16 +13,6 @@ use Illuminate\Support\Facades\DB;
 
 class DepositController extends Controller
 {
-    public function deposit(Request $request){
-        $payment = PaymentMethod::where('method', '!=', 'Wallet')->get();
-        $amount = (integer)$request->input("amount");
-        $product = Product::where('name', 'Wallet')->first();
-        if(!$product){
-            return view('user.deposit', compact('amount', 'payment'))->with('error', 'Deposit temporarily unavailable');
-        }
-        return view('user.deposit',compact('payment','amount','product'));
-    }
-
     public function depositStore(Request $request)
     {
         $validated = $request->validate([
@@ -84,7 +74,7 @@ class DepositController extends Controller
                 }
 
                 // Order create
-               $order =  Order::create([
+                $order =  Order::create([
                     'user_id'        => $user->id,
                     'name'           => $user->name,
                     'email'          => $user->email,
@@ -113,7 +103,4 @@ class DepositController extends Controller
             ], 500);
         }
     }
-
-
-
 }
