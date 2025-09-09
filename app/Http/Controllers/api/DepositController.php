@@ -13,6 +13,16 @@ use Illuminate\Support\Facades\DB;
 
 class DepositController extends Controller
 {
+    public function userHistory(Request $request)
+    {
+        $user = $request->user();
+        $history = WalletTransaction::where('user_id', $user->id)->gat();
+        return response()->json([
+            'status' => true,
+            'history' => $history,
+        ]);
+    }
+
     public function depositStore(Request $request)
     {
         $validated = $request->validate([

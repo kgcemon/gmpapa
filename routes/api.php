@@ -24,6 +24,7 @@ Route::post('mobile-number-update',[AuthController::class,'mobileNumberUpdate'])
 Route::post('profile-update',[AuthController::class,'profileUpdate'])->middleware('auth:sanctum');
 Route::post('profile-update',[AuthController::class,'profileUpdate'])->middleware('auth:sanctum');
 Route::post('add-money',[DepositController::class, 'depositStore'])->middleware('auth:sanctum');
+Route::get('history',[DepositController::class, 'userHistory'])->middleware('auth:sanctum');
 
 
 //login register
