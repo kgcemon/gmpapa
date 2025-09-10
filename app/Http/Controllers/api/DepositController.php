@@ -38,7 +38,7 @@ class DepositController extends Controller
 
             return DB::transaction(function () use ($user, $validated, $amount) {
                 $status = 'hold';
-                // Duplicate trxID Check
+
                 if (Order::where('transaction_id', $validated['transaction_id'])->exists()) {
                     return response()->json([
                         'status'  => false,
