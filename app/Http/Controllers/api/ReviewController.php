@@ -23,11 +23,24 @@ class ReviewController extends Controller
         $totalReviews = Review::where('product_id', $product->id)->count();
         $averageRating = Review::where('product_id', $product->id)->avg('rating');
 
+        // Rating breakdown (1★ - 5★)
+        $ratingCounts = Review::where('product_id', $product->id)
+            ->selectRaw('rating, COUNT(*) as count')
+            ->groupBy('rating')
+            ->pluck('count', 'rating');
+
+        // ensure 1–5 star all present (jodi kono ta na thake tahole 0 dekhabe)
+        $breakdown = [];
+        for ($i = 1; $i <= 5; $i++) {
+            $breakdown[$i] = $ratingCounts->get($i, 0);
+        }
+
         return response()->json([
             'status' => true,
             'reviews' => $reviews,
             'total_reviews' => $totalReviews,
-            'average_rating' => round($averageRating, 1), // 1 decimal e round kora
+            'average_rating' => round($averageRating, 1),
+            'rating_breakdown' => $breakdown,
         ]);
     }
 
