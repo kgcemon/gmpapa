@@ -12,7 +12,7 @@ class ReviewController extends Controller
     public function reviewByProduct($slug)
     {
         $product = Product::where('slug', $slug)->first();
-        $reviews = Review::where('product_id', $product->id)->orderBy('created_at', 'desc')->paginate(20);
+        $reviews = Review::where('product_id', $product->id)->orderBy('created_at', 'desc')->with('user')->paginate(20);
         return response()->json([
             'status' => true,
             'reviews' => $reviews,
