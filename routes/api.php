@@ -9,6 +9,7 @@ use App\Http\Controllers\api\DepositController;
 use App\Http\Controllers\api\OrdersController;
 use App\Http\Controllers\api\PaymentMethodController;
 use App\Http\Controllers\api\ProductsController;
+use App\Http\Controllers\api\ReviewController;
 use App\Http\Controllers\WebHooksController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -18,13 +19,19 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::get('my-orders',[UserOrderController::class,'userOrder'])->middleware('auth:sanctum');
-Route::get('my-profile',[AuthController::class,'user'])->middleware('auth:sanctum');
-Route::post('mobile-number-update',[AuthController::class,'mobileNumberUpdate'])->middleware('auth:sanctum');
-Route::post('profile-update',[AuthController::class,'profileUpdate'])->middleware('auth:sanctum');
-Route::post('profile-update',[AuthController::class,'profileUpdate'])->middleware('auth:sanctum');
-Route::post('add-money',[DepositController::class, 'depositStore'])->middleware('auth:sanctum');
-Route::get('history',[DepositController::class, 'userHistory'])->middleware('auth:sanctum');
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('my-orders',[UserOrderController::class,'userOrder']);
+    Route::get('my-profile',[AuthController::class,'user']);
+    Route::post('mobile-number-update',[AuthController::class,'mobileNumberUpdate']);
+    Route::post('profile-update',[AuthController::class,'profileUpdate']);
+    Route::post('profile-update',[AuthController::class,'profileUpdate']);
+    Route::post('add-money',[DepositController::class, 'depositStore']);
+    Route::get('history',[DepositController::class, 'userHistory']);
+    Route::get('/review/{slug}', [ReviewController::class, 'reviewByProduct'])->name('review');
+    Route::post('/add-review', [ReviewController::class, 'store'])->name('review.store');
+});
+
 
 
 //login register
@@ -57,3 +64,4 @@ Route::get('help-line',[HomePageController::class,'helpLine']);
 //webhooks
 Route::post('auto-webhooks',[WebHooksController::class,'OrderUpdate']);
 Route::get('sms',[PaymentSMSController::class, 'SmsWhooks']);
+Route::get('/review/{slug}', [ReviewController::class, 'reviewByProduct'])->name('review');
