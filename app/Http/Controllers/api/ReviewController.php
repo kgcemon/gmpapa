@@ -12,12 +12,25 @@ class ReviewController extends Controller
     public function reviewByProduct($slug)
     {
         $product = Product::where('slug', $slug)->first();
-        $reviews = Review::where('product_id', $product->id)->orderBy('created_at', 'desc')->with('user')->paginate(20);
+
+        // Reviews with user
+        $reviews = Review::where('product_id', $product->id)
+            ->orderBy('created_at', 'desc')
+            ->with('user')
+            ->paginate(20);
+
+        // Global review stats
+        $totalReviews = Review::where('product_id', $product->id)->count();
+        $averageRating = Review::where('product_id', $product->id)->avg('rating');
+
         return response()->json([
             'status' => true,
             'reviews' => $reviews,
+            'total_reviews' => $totalReviews,
+            'average_rating' => round($averageRating, 1), // 1 decimal e round kora
         ]);
     }
+
 
 
     public function store(Request $request)
