@@ -29,6 +29,11 @@ class Product extends Model
         'delivery_system',
     ];
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'product_id');
+    }
+
 
     public function items()
     {
