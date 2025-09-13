@@ -4,49 +4,108 @@ namespace App\Http\Controllers;
 
 use App\Models\Code;
 use App\Models\Order;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
-use Pest\Support\Str;
+use Illuminate\Support\Str;
 
 class CronJobController extends Controller
 {
     public function freeFireAutoTopUpJob()
     {
-        $orders = Order::where('status', 'processing')->where('order_note', null)->whereHas('product', function ($query) {$query->where('is_auto', 1);})->get();
+        $orders = Order::where('status', 'processing')->whereNull('order_note')->limit(4)->get();
 
         try {
             foreach ($orders as $order) {
-                $code = Code::where('item_id', $order->item_id)->where('status', 'unused')->first();
-                if (!$code) {
+                DB::beginTransaction();
+
+                $order = Order::lockForUpdate()->find($order->id);
+
+                if ($order->status !== 'processing' || $order->order_note !== null) {
+                    DB::rollBack();
                     continue;
                 }
-                $type = (Str::startsWith($code->code, 'UPBD') ? 1 : Str::startsWith($code, 'BDMB')) ? 2 : 1;
-                $order->order_note = 'Delivery Running';
-                $response = Http::withHeaders([
-                        'Content-Type' => 'application/json',
-                        'Accept' => 'application/json',
-                        'RA-SECRET-KEY' => 'kpDvM4m9AOTl0+4Gcnvm7a+VgLJFjSNvuDVC9Jl6wH/RxXJqqCb0RQ==',
-                    ]
-                )->post('https://autonow.codmshopbd.com/topup', [
-                    "playerId" => $order->customer_data,
-                    "denom" => "2",
-                    "type" => $type,
-                    "voucherCode" => $code->code,
-                    "webhook" => "https://admin.gmpapa.com/api/auto-webhooks"
-                ]);
-                $data = json_decode($response->body());
-                if ($response->successful()) {
-                    $order->status = 'Delivery Running';
-                    $order->order_note = $data->uid;
-                    $code->status = 'used';
-                    $code->order_id = $order->id;
-                    $code->save();
-                    $order->save();
+
+                $denom = (string) $order->item->denom ?? '';
+
+                if ($denom == null) {
+                    DB::rollBack();
+                    continue;
                 }
+
+                $denoms = explode(',', $denom);
+
+
+                // Count input requirements (কতবার কোন denom দরকার)
+                $counts = array_count_values($denoms);
+
+                $missing = [];
+
+                foreach ($counts as $value => $needed) {
+                    $available = Code::where('denom', $value)->where('status', 'unused')
+                        ->count();
+
+                    if ($available < $needed) {
+                        $missing[$value] = [
+                            'needed'    => $needed,
+                            'available' => $available
+                        ];
+                    }
+                }
+
+
+                if ($missing) {
+                    DB::rollBack();
+                    continue;
+                }
+
+                foreach ($denoms as $d) {
+
+                    $code = Code::where('denom', $d)->where('status', 'unused')
+                        ->lockForUpdate()
+                        ->first();
+
+                    if (!$code) {
+                        DB::rollBack();
+                        continue;
+                    }
+                    $type = (Str::startsWith($code->code, 'UPBD')) ? 2 : ((Str::startsWith($code->code, 'BDMB')) ? 1 : 1);
+
+                    try {
+                        $response = Http::withHeaders([
+                            'Content-Type' => 'application/json',
+                            'Accept' => 'application/json',
+                            'RA-SECRET-KEY' => 'kpDvM4m9AOTl0+4Gcnvm7a+VgLJFjSNvuDVC9Jl6wH/RxXJq',
+                        ])->post('https://autonow.codmshopbd.com/topup', [
+                            "playerId"   => $order->customer_data,
+                            "denom"      => $d,
+                            "type"       => $type,
+                            "voucherCode"=> $code->code,
+                            "webhook"    => "https://codmshop.com/api/auto-webhooks"
+                        ]);
+
+                    }catch (\Exception $exception){$order->order_note = 'server error';}
+
+                    $data = $response->json();
+                    $uid = $data['uid'] ?? null;
+                    $order->status = 'Delivery Running';
+                    $order->order_note = $uid ?? null;
+                    $order->save();
+                    $code->status = 'used';
+                    $code->uid = $uid ?? null;
+                    $code->order_id = $order->id;
+                    if (empty($uid)){
+                        $code->active = false;
+                    }
+                    $code->save();
+                }
+
+                DB::commit();
             }
+
             return 'Cron job run successfully';
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
+            DB::rollBack();
             return $exception->getMessage();
         }
     }
 }
-

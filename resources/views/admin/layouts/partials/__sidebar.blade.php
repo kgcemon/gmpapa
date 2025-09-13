@@ -181,10 +181,17 @@
                     <div class="collapse" id="settings">
                         <ul class="nav nav-collapse">
                             <li><a href="/admin/payment-methods"><span class="sub-item {{ Str::contains(request()->path(), 'payment-methods') ? 'active' : '' }}">Payment Setting</span></a></li>
-                            <li><a href="/admin/social-links"><span class="sub-item">Site Settings</span></a></li>
+                            <li><a href="/withdraws/settings"><span class="sub-item">Site Settings</span></a></li>
                             <li><a href="/admin/settings/referral"><span class="sub-item">SEO Settings</span></a></li>
                         </ul>
                     </div>
+                </li>
+
+                <li class="nav-item {{ request()->is('admin/send-offer') ? 'active' : '' }}">
+                    <a href="{{route('admin.offer.index')}}">
+                        <i class="fas fa-broadcast-tower"></i>
+                        <p>Send Offer Email</p>
+                    </a>
                 </li>
 
             </ul>

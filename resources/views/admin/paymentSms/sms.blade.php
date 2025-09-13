@@ -2,72 +2,60 @@
 
 @section('content')
     <div class="container mt-4">
-        <div class="card shadow-sm border-0">
-            <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white">
-                <h5 class="mb-0">Payment SMS</h5>
-                <form action="{{ route('admin.sms-search') }}" method="GET" class="d-flex" style="gap: 8px;">
-                    <input type="text" name="search" value="{{ request('search') }}"
-                           class="form-control form-control-sm"
-                           placeholder="Search by TrxID or Number">
-                    <button type="submit" class="btn btn-sm btn-light">Search</button>
-                </form>
-            </div>
 
-            @if(session('success'))
-                <div class="alert alert-success m-3">{{ session('success') }}</div>
-            @elseif(session('error'))
-                <div class="alert alert-danger m-3">{{ session('error') }}</div>
-            @endif
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-2" style="padding: 10px!important; align-content: center!important;">
+            <h4>Payment SMS</h4>
 
-            <div class="card-body table-responsive">
-                <table class="table table-hover table-bordered align-middle text-center">
-                    <thead class="table-dark">
-                    <tr>
-                        <th>#</th>
-                        <th>Order Number</th>
-                        <th>Sender</th>
-                        <th>Number</th>
-                        <th>Transaction ID</th>
-                        <th>Status</th>
-                        <th>Created At</th>
-                        <th>Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @forelse($data as $order)
-                        <tr>
-                            <td>{{ $loop->iteration + ($orders->currentPage() - 1) * $orders->perPage() }}</td>
-                            <td>{{ $order->order_number }}</td>
-                            <td>{{ $order->sender }}</td>
-                            <td>{{ $order->number }}</td>
-                            <td>{{ $order->trxID }}</td>
-                            <td>
-                                @if($order->status == 'pending')
-                                    <span class="badge bg-warning text-dark">Pending</span>
-                                @elseif($order->status == 'completed')
-                                    <span class="badge bg-success">Completed</span>
-                                @else
-                                    <span class="badge bg-danger">Failed</span>
-                                @endif
-                            </td>
-                            <td>{{ $order->created_at ? $order->created_at->format('d M Y, h:i A') : 'N/A' }}</td>
-                            <td>
-                                <a href="{{ route('admin.orders.show', $order->id) }}"
-                                   class="btn btn-sm btn-primary">View</a>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="8" class="text-muted">No orders found.</td>
-                        </tr>
-                    @endforelse
-                    </tbody>
-                </table>
+            <div class="d-flex gap-2 flex-wrap">
+                <!-- Status Filter & Search -->
+                <div class="d-flex gap-2 flex-wrap">
+                    <select id="statusFilter" class="form-select">
+                        <option value="">All Status</option>
+                        <option value="0" {{ request('status') == '0' ? 'selected' : '' }}>Pending</option>
+                        <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>Completed</option>
+                    </select>
 
-                <div class="mt-3">
-                    {{ $data->withQueryString()->links() }}
+                    <input type="text" id="searchInput" class="form-control" placeholder="Search by sender, number, trxID, or amount" value="{{ request('search') }}">
                 </div>
+
             </div>
         </div>
+
+        <!-- Table Container -->
+        <div id="smsTableContainer">
+            @include('admin.paymentSms.sms_table', ['data' => $data])
+        </div>
+
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const statusFilter = document.getElementById('statusFilter');
+            const searchInput = document.getElementById('searchInput');
+            const smsTableContainer = document.getElementById('smsTableContainer');
+
+            let debounceTimer;
+
+            function fetchData() {
+                const status = statusFilter.value;
+                const search = searchInput.value;
+
+                fetch(`{{ route('admin.sms') }}?status=${status}&search=${search}`, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                    .then(response => response.text())
+                    .then(html => {
+                        smsTableContainer.innerHTML = html;
+                    });
+            }
+
+            statusFilter.addEventListener('change', fetchData);
+            searchInput.addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(fetchData, 500); // 0.5s debounce
+            });
+        });
+    </script>
+@endpush

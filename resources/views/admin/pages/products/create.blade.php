@@ -78,17 +78,26 @@
                             </button>
                             <div class="collapse" id="seoSection">
                                 <div class="card card-body">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <label>Tags <small class="text-muted">(comma-separated)</small></label>
-                                            <input type="text" name="tags" class="form-control @error('tags') is-invalid @enderror" value="{{ old('tags') }}">
-                                            @error('tags') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label>SEO Keywords</label>
-                                            <input type="text" name="keywords" class="form-control @error('keywords') is-invalid @enderror" value="{{ old('keywords') }}">
-                                            @error('keywords') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                                        </div>
+                                    <div class="col-md-6">
+                                        <label>SEO Title</label>
+                                        <input type="text" name="seo_title" class="form-control @error('seo_title') is-invalid @enderror" value="{{ old('seo_title') }}">
+                                        @error('keywords')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>SEO Description</label>
+                                        <input type="text" name="seo_description" class="form-control @error('seo_title') is-invalid @enderror" value="{{ old('seo_title') }}">
+                                        @error('keywords')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Keywords</label>
+                                        <input type="text" name="seo_keywords" class="form-control @error('keywords') is-invalid @enderror" value="{{ old('keywords') }}">
+                                        @error('keywords')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
                             </div>
@@ -157,8 +166,6 @@
         </div>
     </div>
 @endsection
-
-@push('scripts')
     <script src="https://cdn.tiny.cloud/1/rx33nh9mrg7zvtjoq6t8vd2ddu0l67uiw9stt1scrdjlb1dh/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 
     <script>
@@ -199,4 +206,3 @@
             }
         });
     </script>
-@endpush

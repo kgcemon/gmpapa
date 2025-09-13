@@ -2,7 +2,6 @@
 
 @section('content')
     <div class="container mt-4">
-        {{-- Page Header --}}
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h4 class="fw-bold">All Variants for {{ $product->name }}</h4>
             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addVariantModal">
@@ -10,14 +9,12 @@
             </button>
         </div>
 
-        {{-- Session Messages for Success/Error Feedback --}}
         @if(session('success'))
             <div class="alert alert-success" role="alert">{{ session('success') }}</div>
         @elseif(session('error'))
             <div class="alert alert-danger" role="alert">{{ session('error') }}</div>
         @endif
 
-        {{-- Variants Table --}}
         <div class="card shadow-sm border-0">
             <div class="card-body table-responsive">
                 <table class="table table-bordered table-striped text-center align-middle">
@@ -27,6 +24,7 @@
                         <th>Name</th>
                         <th>Price (৳)</th>
                         <th>Sort</th>
+                        <th>Denom</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
@@ -37,8 +35,9 @@
                             <td>{{ $variant->name }}</td>
                             <td>{{ $variant->price }}৳</td>
                             <td>{{ $variant->sort }}</td>
+                            <td>{{ $variant->denom }}</td>
                             <td>
-                                {{-- 1. The Edit Button with data-* attributes to hold the row's data --}}
+
                                 <button
                                     type="button"
                                     class="btn btn-sm btn-primary"
@@ -51,7 +50,7 @@
                                     data-des="{{ $variant->description }}"
                                 >Edit</button>
 
-                                {{-- Delete Button --}}
+
                                 <button
                                     type="button"
                                     class="btn btn-sm btn-danger"
@@ -75,7 +74,7 @@
         </div>
     </div>
 
-    <!-- Add Variant Modal -->
+
     <div class="modal fade" id="addVariantModal" tabindex="-1" aria-labelledby="addVariantModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <form method="POST" action="{{ route('admin.variant.store', request()->segment(3)) }}">
@@ -109,10 +108,10 @@
         </div>
     </div>
 
-    <!-- Edit Variant Modal -->
+
     <div class="modal fade" id="editVariantModal" tabindex="-1" aria-labelledby="editVariantModalLabel" aria-hidden="true">
         <div class="modal-dialog">
-            {{-- The form action will be set dynamically by JavaScript --}}
+
             <form id="editVariantForm" method="POST" action="{{ route('admin.variant.update', $product->id) }}">
                 @csrf
                 @method('PUT')
@@ -135,6 +134,10 @@
                             <input type="number" class="form-control" id="editVariantSort" name="sort" required>
                         </div>
                         <div class="mb-3">
+                            <label for="editVariantDenom" class="form-label">Denom</label>
+                            <input type="text" class="form-control" id="editVariantDenom" name="denom">
+                        </div>
+                        <div class="mb-3">
                             <label for="editVariantDes" class="form-label">Description</label>
                             <input type="text" class="form-control" id="editVariantDes" name="description">
                         </div>
@@ -148,10 +151,10 @@
         </div>
     </div>
 
-    <!-- Delete Variant Modal -->
+
     <div class="modal fade" id="deleteVariantModal" tabindex="-1" aria-labelledby="deleteVariantModalLabel" aria-hidden="true">
         <div class="modal-dialog">
-            {{-- The form action will be set dynamically by JavaScript --}}
+
             <form id="deleteVariantForm" method="POST" action="{{ route('admin.variant.destroy', $product->id) }}">
                 @csrf
                 @method('DELETE')
@@ -179,11 +182,10 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
-            // --- EDIT MODAL SCRIPT ---
             const editModal = document.getElementById('editVariantModal');
 
             editModal.addEventListener('show.bs.modal', function (event) {
-                // 3. Get the button that triggered the modal
+
                 const button = event.relatedTarget;
 
                 const id = button.getAttribute('data-id');
@@ -197,10 +199,11 @@
                 const priceInput = document.getElementById('editVariantPrice');
                 const sorts = document.getElementById('editVariantSort');
                 const des = document.getElementById('editVariantDes');
+                const denom = document.getElementById('editVariantDenom');
 
                 form.action = `/admin/variant/${id}`;
 
-                // Populate the input fields with the variant's current data
+
                 nameInput.value = name;
                 priceInput.value = price;
                 sorts.value = sort;
@@ -208,7 +211,6 @@
                 des.value = description;
             });
 
-            // --- DELETE MODAL SCRIPT ---
             const deleteModal = document.getElementById('deleteVariantModal');
             deleteModal.addEventListener('show.bs.modal', function (event) {
                 const button = event.relatedTarget;
@@ -218,7 +220,6 @@
                 const form = document.getElementById('deleteVariantForm');
                 const namePlaceholder = document.getElementById('deleteVariantName');
 
-                // Update the form action and the confirmation text
                 form.action = `/admin/variant/${id}`;
                 namePlaceholder.textContent = name;
             });

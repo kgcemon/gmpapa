@@ -14,7 +14,7 @@ class  VariantController extends Controller
     // Show all products
     public function index()
     {
-        $products = Product::with('items')->orderby('sort')->paginate(15);
+        $products = Product::where('name', '!=', 'Wallet')->with('items')->orderby('sort')->paginate(15);
         return view('admin.pages.variant.index', compact('products'));
     }
 
@@ -34,6 +34,7 @@ class  VariantController extends Controller
                 'price' => 'required|numeric',
                 'productID' => 'required|exists:products,id',
                 'description' => 'sometimes|nullable|string',
+                'denom' => 'sometimes|nullable|string',
             ]);
 
             Item::create([
@@ -41,6 +42,7 @@ class  VariantController extends Controller
                 'price' => $validated['price'],
                 'product_id' => $request->input('productID'),
                 'description' => $validated['description'] ?? null,
+                'denom' => $validated['denom'] ?? null,
             ]);
 
             return back()->with('success', 'Variant Added Successfully.');
@@ -65,6 +67,7 @@ class  VariantController extends Controller
             'price' => 'required|numeric',
             'sort' => 'sometimes|nullable|numeric',
             'description' => 'sometimes|nullable|string',
+            'denom' => 'sometimes|nullable|string',
         ]);
         // Update fields
         $product->update([
@@ -72,6 +75,7 @@ class  VariantController extends Controller
             'price' => $request['price'],
             'sort' => $request->input('sort'),
             'description' => $request['description'] ?? null,
+            'denom' => $request['denom'] ?? null,
         ]);
 
         return back()->with('success', 'Product updated successfully.');

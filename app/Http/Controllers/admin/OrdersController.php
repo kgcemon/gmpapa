@@ -3,8 +3,13 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\OrderDeliveredMail;
+use App\Mail\OrderFailedMail;
 use App\Models\Order;
+use App\Models\User;
+use App\Models\WalletTransaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class OrdersController extends Controller
 {
@@ -40,25 +45,99 @@ class OrdersController extends Controller
     }
 
 
-
     public function update(Request $request, Order $order)
     {
         try {
-            $request->validate([
-                'status' => 'required|in:hold,processing,Delivery Running,delivered,cancelled',
+            // ✅ Validate request
+            $validated = $request->validate([
+                'status' => 'required|in:hold,processing,Delivery Running,delivered,cancelled,refunded',
+                'order_note' => 'nullable|string|max:500',
             ]);
 
-            if($request->input('order_note')) $order->order_note = $request->input('order_note');
+            // পুরানো status store করা হলো condition check করার জন্য
+            $previousStatus = $order->status;
 
-            $order->status = $request->status;
+            // ✅ Order note update
+            if (!empty($validated['order_note'])) {
+                $order->order_note = $validated['order_note'];
+            }
+
+            // ✅ Update status
+            $order->status = $validated['status'];
+
+            // ✅ Wallet handling
+            $user = User::find($order->user_id);
+
+
+            if ($order->product->name === 'Wallet') {
+                // Wallet type order → Add balance only when moving to delivered
+                if ($previousStatus === 'hold' || $previousStatus === 'processing') {
+                    if ($validated['status'] === 'delivered') {
+                        $user->increment('wallet', $order->total);
+                        WalletTransaction::create([
+                            'user_id'   => $user->id,
+                            'amount'    => $order->total,
+                            'type'      => 'credit',
+                            'description' => 'Deposit to Wallet order ID' . $order->id,
+                            'status'    => 1,
+                        ]);
+                    }
+                }
+            } else if ($validated['status'] === 'refunded' && $order->user->id != null) {
+                // Non-wallet product → Refund case
+                if ($previousStatus === 'processing' || $previousStatus === 'Delivery Running') {
+                    $user->increment('wallet', $order->total);
+                    WalletTransaction::create([
+                        'user_id'   => $user->id,
+                        'amount'    => $order->total,
+                        'type'      => 'credit',
+                        'description' => 'Refund to Wallet Order id: ' . $order->id,
+                        'status'    => 1,
+                    ]);
+                }
+            }
+
+            if ($validated['status'] === 'delivered' && $user) {
+                try {
+                    Mail::to($user->email)->send(new OrderDeliveredMail(
+                        $user->name,
+                        $order->id,
+                        now(),
+                        $order->total,
+                        url('/thank-you/'.$order->uid),
+                        $order->item->name ?? "",
+                        $order->customer_data ?? "",
+                    ));
+                } catch (\Exception $e) {}
+            }
+            if ($validated['status'] === 'cancelled' && $user) {
+                try {
+                    Mail::to($user->email)->send(new OrderFailedMail(
+                        $user->name,
+                        $order->id,
+                        now()->format('d M Y, h:i A'),
+                        $order->total,
+                        url('/')
+                    ));
+                }catch (\Exception $e) {
+                    back()->with('error', $e->getMessage());
+                }
+            }
+
+
+            // ✅ Save order
             $order->save();
 
-            return redirect()->route('admin.orders.index')
+            return redirect()
+                ->route('admin.orders.index')
                 ->with('success', 'Order status updated successfully.');
-        }catch (\Exception $exception){
-            return back()->with('error', $exception->getMessage());
+
+        } catch (\Throwable $exception) {
+
+            return back()->with('error', 'Failed to update order: ' . $exception->getMessage());
         }
     }
+
 
     public function editFrom($id){
 
@@ -111,6 +190,5 @@ class OrdersController extends Controller
 
         return redirect()->back()->with('success', 'Bulk action applied successfully.');
     }
-
 
 }

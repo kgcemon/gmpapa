@@ -12,6 +12,7 @@ use App\Http\Controllers\admin\SocialLinkController;
 use App\Http\Controllers\admin\UsersController;
 use App\Http\Controllers\admin\VariantController;
 use App\Http\Controllers\CronJobController;
+use App\Http\Controllers\OfferController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -54,6 +55,7 @@ Route::middleware('auth')->prefix('admin')->as('admin.')->group(function () {
     //codes
     Route::resource('codes', CodesController::class);
     Route::get('codes/{id}', [CodesController::class, 'code'])->name('code');
+    Route::get('code/{id}', [CodesController::class, 'singleCode']);
 
     //payment Setting
     Route::resource('payment-methods', PaymentMethodSettingController::class);
@@ -62,12 +64,18 @@ Route::middleware('auth')->prefix('admin')->as('admin.')->group(function () {
 
 
     //paymentSMS
-    Route::get('payment-sms',[PaymentSMSController::class, 'index'])->name('payment-sms');
-    Route::get('payment-sms',[PaymentSMSController::class, 'search'])->name('sms-search');
+    //paymentSMS
+    Route::get('/payment-sms', [PaymentSmsController::class, 'index'])->name('sms');
+    Route::post('/sms/add', [PaymentSmsController::class, 'addSms'])->name('sms.add');
+    Route::put('/sms/update-status', [PaymentSmsController::class, 'updateStatus'])->name('sms.update-status');
+    Route::delete('/sms/{id}', [PaymentSmsController::class, 'delete'])->name('sms.delete');
 
 
     //Social
     Route::resource('social-links', SocialLinkController::class);
+
+    Route::get('/send-offer', [OfferController::class, 'index'])->name('offer.index');
+    Route::post('/send-offer', [OfferController::class, 'send'])->name('offer.sends');
 
 });
 

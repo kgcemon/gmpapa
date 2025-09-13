@@ -32,6 +32,9 @@ return new class extends Migration
             $table->integer('sort')->default(0);
             $table->boolean('stock')->default(1);
             $table->integer('status')->default(true);
+            $table->string('seo_title')->nullable();
+            $table->string('seo_description')->nullable();
+            $table->string('seo_keywords')->nullable();
             $table->timestamps();
         });
 

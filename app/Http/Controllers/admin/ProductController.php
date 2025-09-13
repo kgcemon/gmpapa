@@ -63,6 +63,9 @@ class ProductController extends Controller
                 'cover_image'       => 'storage/' . $coverPath,
                 'sort'              => $request->sort ?? 0,
                 'stock'             => $request->stock,
+                'seo_title'         => $request->seo_title,
+                'seo_description'   => $request->seo_description,
+                'seo_keywords'     =>  $request->seo_keywords
             ]);
 
             return redirect()->route('admin.products.index')->with('success', 'Product Added Successfully.');
@@ -134,6 +137,9 @@ class ProductController extends Controller
             'stock'             => $request->stock,
             'support_country'   => $request->support_country,
             'delivery_system'   => $request->delivery_system,
+            'seo_title'         => $request->seo_title,
+            'seo_description'   => $request->seo_description,
+            'seo_keywords'     =>  $request->seo_keywords
         ]);
 
         return redirect()->route('admin.products.index')->with('success', 'Product updated successfully.');

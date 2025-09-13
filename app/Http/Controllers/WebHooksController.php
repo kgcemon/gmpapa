@@ -2,15 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OrderDeliveredMail;
+use App\Mail\OrderRefundMail;
+use App\Models\Code;
 use App\Models\Order;
+use App\Models\User;
+use App\Models\WalletTransaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class WebHooksController extends Controller
 {
     public function OrderUpdate(Request $request)
     {
-        // Decode JSON as associative array
-        $data = json_decode($request->getContent(), true);
+        $data = $request->input();
 
         if (!$data || !isset($data['uid'])) {
             return response()->json(['status' => false, 'message' => 'Invalid data'], 400);
@@ -21,16 +26,73 @@ class WebHooksController extends Controller
         $uid = $data['uid'];
 
         $order = Order::where('order_note', $uid)->first();
+        $user = $order ? User::find($order->user_id) : null;
 
         if ($order) {
-            if ($status) {
+            if ($status == 'true') {
                 $order->status = 'delivered';
+                $order->save();
+                if ($user) {
+                    try {
+                        Mail::to($user->email)->send(new OrderDeliveredMail(
+                            $user->name,
+                            $order->id,
+                            now(),
+                            $order->total,
+                            url('/thank-you/'.$order->uid),
+                            $order->item->name ?? "",
+                            $order->customer_data ?? "",
+                        ));
+                    } catch (\Exception $e) {}
+                }
             } else {
-                $order->status = 'processing';
+                $order->status = 'Delivery Running';
+                $usedCode = Code::where('uid', $uid)->first();
+                if ($usedCode) {
+                    $usedCode->active = false;
+                    $usedCode->note = $message ?? null;
+                    $usedCode->save();
+                }
             }
 
             if ($message !== null) {
                 $order->order_note = $message;
+                if ($message == 'Invalid Player ID'){
+                    $order->status = 'refunded';
+                    if ($user) {
+                        $user->increment('wallet', $order->total);
+                        $user->save();
+                        WalletTransaction::create([
+                            'user_id'   => $user->id,
+                            'amount'    => $order->total,
+                            'type'      => 'credit',
+                            'description' => 'Refund to Wallet Order id: ' . $order->id,
+                            'status'    => 1,
+                        ]);
+
+                        $denom = $order->item->denom ?? '';
+
+                        Code::whereIn('denom', array_map('trim', explode(',', $denom)))
+                            ->where('uid', $uid)
+                            ->update([
+                                'status' => 'unused',
+                                'uid' => null,
+                                'note' => 'Refund to Wallet Order id: ' . $order->id,
+                                'active' => true,
+                            ]);
+
+                        try {
+                            Mail::to($user->email)->send(new OrderRefundMail(
+                                $user->name,
+                                $order->id,
+                                now()->format('d M Y, h:i A'),
+                                $order->total,
+                                url('/order/'.$order->uid)
+                            ));
+
+                        }catch (\Exception $e) {}
+                    }
+                }
             }
 
             $order->save();

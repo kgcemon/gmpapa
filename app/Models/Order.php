@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     protected $fillable = [
+        'uid',
         'user_id',
         'product_id',
         'name',
@@ -23,7 +24,19 @@ class Order extends Model
         'transaction_id',
         'number',
     ];
+    protected static function booted()
+    {
+        static::creating(function ($order) {
+            if (empty($order->uid)) {
+                $order->uid = self::generateUid();
+            }
+        });
+    }
 
+    public function usedCodes()
+    {
+        return $this->hasMany(Code::class, 'order_id', 'id');
+    }
 
     public function product()
     {
@@ -46,6 +59,16 @@ class Order extends Model
     public function autoTopUpProduct()
     {
         return $this->belongsTo(Product::class, 'product_id');
+    }
+
+
+    public static function generateUid(): string
+    {
+        do {
+            $code = strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 15));
+        } while (self::where('uid', $code)->exists());
+
+        return $code;
     }
 
 

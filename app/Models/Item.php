@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Item extends Model
 {
-    protected $fillable = ['name','price','description','product_id','sort'];
+    protected $fillable = ['name','price', 'denom','description','product_id','sort'];
     protected $hidden = ['created_at', 'updated_at','sort','product_id'];
 
     public function product(){

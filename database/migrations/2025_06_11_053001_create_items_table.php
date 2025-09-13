@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->unsignedInteger('sort')->default(0)->index();
             $table->boolean('status')->default(1);
-            $table->integer('denom')->default(0);
+            $table->string('denom')->nullable();
             $table->timestamps();
         });
     }

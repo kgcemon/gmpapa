@@ -11,22 +11,18 @@
                 <table class="table table-bordered table-striped align-middle text-center">
                     <thead class="table-dark">
                     <tr>
-                        <th>#</th>
                         <th>Image</th>
                         <th>Name</th>
-                        <th>Created At</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
                     <tbody>
                     @forelse($products as $product)
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
                             <td>
                                 <img src="{{ asset($product->image) }}" alt="Image" width="50">
                             </td>
                             <td>{{ $product->name }}</td>
-                            <td>{{ $product->created_at ? $product->created_at->diffForHumans() : 'N/A' }}</td>
                             <td>
                                 <a href="{{ route('admin.code', $product->id) }}" class="btn btn-sm btn-primary me-1">View Code</a>
                             </td>

@@ -49,6 +49,7 @@
                             </td>
                             <td>{{ $product->created_at ? $product->created_at->diffForHumans() : 'N/A' }}</td>
                             <td>
+                                <div class="d-flex justify-content-center gap-2">
                                 <a href="{{ route('admin.products.edit', $product->id) }}" class="btn btn-sm btn-primary me-1">Edit</a>
 
                                 <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST" style="display:inline-block" onsubmit="return confirm('Are you sure to delete this product?');">
@@ -56,6 +57,7 @@
                                     @method('DELETE')
                                     <button class="btn btn-sm btn-danger">Delete</button>
                                 </form>
+                                </div>
                             </td>
                         </tr>
                     @empty
