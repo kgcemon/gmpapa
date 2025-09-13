@@ -36,6 +36,7 @@ class CodesController extends Controller
 
         try {
             $lines = preg_split('/\r\n|\r|\n/', $validatedData['codes']);
+            $item = Item::where('product_id', $validatedData['product_id'])->where('id', $request->input('item_id'))->first();
 
             foreach ($lines as $line) {
                 $code = trim($line);
@@ -45,6 +46,7 @@ class CodesController extends Controller
                         'product_id' => $request->input('product_id'),
                         'item_id' => $request->input('item_id'),
                         'code' => $code,
+                        'denom' => $item->denom ?? null,
                     ]);
                 }
             }
@@ -60,17 +62,39 @@ class CodesController extends Controller
         $unusedCodesCountPerVariant = Code::where('status', 'unused')
             ->selectRaw('item_id, COUNT(*) as total_unused')
             ->groupBy('item_id')
-            ->with('variant') // loads related Item model (id, name)
+            ->with('variant')
             ->get();
-        $codes = Code::where('product_id', $id)->paginate(5);
         $product = Product::where('id', $id)->first() ?? '';
-        return view('admin.pages.codes.codes', compact('codes', 'product','unusedCodesCountPerVariant'));
+        return view('admin.pages.codes.codes', compact('product','unusedCodesCountPerVariant'));
     }
 
 
     // Show the edit form
+    public function singleCode(Request $request, $denom)
+    {
+        $query = Code::where('denom', $denom);
+
+        // Search by code
+        if ($request->filled('search')) {
+            $query->where('code', 'like', '%' . $request->search . '%');
+        }
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $codes = $query->orderBy('id', 'desc')->paginate(5)->withQueryString();
+
+        $products = Product::orderBy('sort')->get();
+
+        return view('admin.pages.codes.edit', compact('codes', 'products'));
+    }
+
+
     public function edit($id)
     {
+
     }
 
     // Update the product
@@ -86,6 +110,8 @@ class CodesController extends Controller
         $code->update([
             'code' => $request->input('code'),
             'item_id' => $request->input('item_id'),
+            'status' => $request->input('status'),
+            'denom' => $request->input('denom'),
         ]);
 
         return back()->with('success', 'Product updated successfully.');
