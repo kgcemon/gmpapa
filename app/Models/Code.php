@@ -15,12 +15,14 @@ class Code extends Model
         'order_id',
         'status',
         'active',
-        'denom'
+        'denom',
+        'uid',
+        'note'
     ];
 
 
     public function variant()
     {
-        return $this->hasOne(Item::class, 'id', 'item_id')->select('id', 'name');
+        return $this->hasOne(Item::class, 'id', 'item_id')->select('id', 'name','denom');
     }
 }
