@@ -74,19 +74,21 @@
                                 <td>{{ $method->created_at->format('Y-m-d H:i') }}</td>
                                 <td>{{ $method->updated_at->format('Y-m-d H:i') }}</td>
                                 <td>
-                                    <!-- Edit -->
-                                    <button class="btn btn-sm btn-warning"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#editMethodModal{{ $method->id }}">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </button>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <!-- Edit -->
+                                        <button class="btn btn-sm btn-warning"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#editMethodModal{{ $method->id }}">
+                                            <i class="bi bi-pencil-square">Edit</i>
+                                        </button>
 
-                                    <!-- Delete -->
-                                    <button class="btn btn-sm btn-danger"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#deleteMethodModal{{ $method->id }}">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
+                                        <!-- Delete -->
+                                        <button class="btn btn-sm btn-danger"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteMethodModal{{ $method->id }}">
+                                            <i class="bi bi-trash">Delete</i>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
 

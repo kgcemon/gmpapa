@@ -21,14 +21,14 @@ return new class extends Migration
             $table->boolean('status')->default(1);
             $table->timestamps();
         });
-      DB::table('payment_methods')->insert([
-           'icon' => 'fa-money',
-           'method' => 'Wallet',
-           'description' => 'Cash',
-           'number' => 1,
-           'status' => 1,
-          'created_at' => now(),
-          'updated_at' => now(),
+        DB::table('payment_methods')->insert([
+            'icon' => '/wallet.png',
+            'method' => 'Wallet',
+            'description' => 'Cash',
+            'number' => 1,
+            'status' => 1,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
     }
 
