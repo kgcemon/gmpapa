@@ -23,10 +23,12 @@ return new class extends Migration
         });
       DB::table('payment_methods')->insert([
            'icon' => 'fa-money',
-           'method' => 'WALLET',
+           'method' => 'Wallet',
            'description' => 'Cash',
            'number' => 1,
            'status' => 1,
+          'created_at' => now(),
+          'updated_at' => now(),
         ]);
     }
 
