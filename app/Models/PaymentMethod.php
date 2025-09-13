@@ -9,8 +9,8 @@ class PaymentMethod extends Model
     protected $fillable = [
         'icon',
         'method',
-        'description',
         'number',
-        'status'
+        'description',
+        'status',
     ];
 }
