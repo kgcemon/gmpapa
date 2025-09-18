@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->integer('amount');
             $table->enum('type', ['debit', 'credit']);
+            $table->enum('remark', ['refer', 'bonus', 'level'])->nullable();
             $table->string('description')->nullable();
             $table->boolean('status')->default(false);
             $table->timestamps();

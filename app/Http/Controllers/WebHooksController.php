@@ -80,16 +80,16 @@ class WebHooksController extends Controller
                             Code::where('order_id', $order->id)
                                 ->where('denom', $d)->update(['status' => 'unused']);
                         }
-                        try {
-                            Mail::to($user->email)->send(new OrderRefundMail(
-                                $user->name,
-                                $order->id,
-                                now()->format('d M Y, h:i A'),
-                                $order->total,
-                                url('/order/'.$order->uid)
-                            ));
-
-                        }catch (\Exception $e) {}
+//                        try {
+//                            Mail::to($user->email)->send(new OrderRefundMail(
+//                                $user->name,
+//                                $order->id,
+//                                now()->format('d M Y, h:i A'),
+//                                $order->total,
+//                                url('/order/'.$order->uid)
+//                            ));
+//
+//                        }catch (\Exception $e) {}
 
                     }
                 }
