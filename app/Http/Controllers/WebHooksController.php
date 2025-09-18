@@ -9,11 +9,14 @@ use App\Models\Order;
 use App\Models\User;
 use App\Models\WalletTransaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class WebHooksController extends Controller
 {
-    public function OrderUpdate(Request $request)
+    public function OrderUpdate(Request $request): \Illuminate\Http\JsonResponse
     {
         $data = $request->input();
 
@@ -71,16 +74,12 @@ class WebHooksController extends Controller
                         ]);
 
                         $denom = $order->item->denom ?? '';
+                        $denoms = explode(',', $denom);
 
-                        Code::whereIn('denom', array_map('trim', explode(',', $denom)))
-                            ->where('uid', $uid)
-                            ->update([
-                                'status' => 'unused',
-                                'uid' => null,
-                                'note' => 'Refund to Wallet Order id: ' . $order->id,
-                                'active' => true,
-                            ]);
-
+                        foreach ($denoms as $d) {
+                            Code::where('order_id', $order->id)
+                                ->where('denom', $d)->update(['status' => 'unused']);
+                        }
                         try {
                             Mail::to($user->email)->send(new OrderRefundMail(
                                 $user->name,
@@ -91,6 +90,7 @@ class WebHooksController extends Controller
                             ));
 
                         }catch (\Exception $e) {}
+
                     }
                 }
             }
