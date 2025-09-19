@@ -185,7 +185,7 @@ class PaymentSMSController extends Controller
                 'sender'     => $sender,
                 'number'     => $number,
                 'trxID'      => $txn_id,
-                'amount'     => (integer)$amount,
+                'amount'     => $amount,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
