@@ -39,7 +39,7 @@
             e.preventDefault();
 
             $.ajax({
-                url: "{{ route('notice.store') }}",
+                url: "{{ route('admin.notice.store') }}",
                 type: "POST",
                 data: $(this).serialize(),
                 success: function(res) {
