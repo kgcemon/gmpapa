@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('sender',30);
             $table->string('number',15);
             $table->string('trxID',30)->unique();
-            $table->float('amount');
+            $table->string('amount');
             $table->enum('status',[0,1])->default(0);
             $table->timestamps();
         });
