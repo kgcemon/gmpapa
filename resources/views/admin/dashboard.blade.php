@@ -99,7 +99,7 @@
                     <tr>
                         <td>{{ $order->name }}</td>
                         <td>{{ $order->product->name }}</td>
-                        <td>{{ $order->item->name }}</td>
+                        <td>{{ $order->item->name ?? "" }}</td>
                         <td>{{ $order->quantity }}</td>
                         <td class="text-bg-info">{{ number_format($order->total, 2) }}৳</td>
                         <td>
