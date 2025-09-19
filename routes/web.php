@@ -12,6 +12,7 @@ use App\Http\Controllers\admin\SocialLinkController;
 use App\Http\Controllers\admin\UsersController;
 use App\Http\Controllers\admin\VariantController;
 use App\Http\Controllers\CronJobController;
+use App\Http\Controllers\NoticeUpdateController;
 use App\Http\Controllers\OfferController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -76,6 +77,14 @@ Route::middleware('auth')->prefix('admin')->as('admin.')->group(function () {
 
     Route::get('/send-offer', [OfferController::class, 'index'])->name('offer.index');
     Route::post('/send-offer', [OfferController::class, 'send'])->name('offer.sends');
+
+
+
+    //notice update
+    Route::get('/notice', [NoticeUpdateController::class, 'index'])->name('notice.index');
+    Route::post('/notice/store', [NoticeUpdateController::class, 'store'])->name('notice.store');
+    Route::delete('/notice/{id}', [NoticeUpdateController::class, 'destroy'])->name('notice.destroy');
+
 
 });
 
