@@ -39,7 +39,7 @@
                     @forelse ($codes as $code)
                         <tr>
                             <td>{{ $code->id }}</td>
-                            <td style="font-size: 5px">{{ $code->code }}</td>
+                            <td style="font-size: 12px">{{ $code->code }}</td>
                             <td>{{ $code->denom ?? '-' }}</td>
                             <td><a href="/admin/orders/{{$code->order_id}}">{{ $code->order_id ?? '' }}</a> </td>
                             <td>{{ $code->status }}</td>
