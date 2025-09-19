@@ -16,7 +16,7 @@ class DepositController extends Controller
     public function userHistory(Request $request)
     {
         $user = $request->user();
-        $history = WalletTransaction::where('user_id', $user->id)->get();
+        $history = WalletTransaction::where('user_id', $user->id)->orderBy('id', 'desc')->get();
         return response()->json([
             'status' => true,
             'history' => $history,
