@@ -30,7 +30,7 @@ class OrdersController extends Controller
         // Step 1: Basic validation rules
         $rules = [
             'product_id'     => 'required|exists:products,id',
-            'item_id'        => 'required|exists:items,id',
+            'items_id'        => 'required|exists:items,id',
             'customer_data'  => 'required',
             'payment_id'     => 'required|exists:payment_methods,id',
             'transaction_id' => 'nullable|string',
@@ -41,7 +41,7 @@ class OrdersController extends Controller
 
         $user          = Auth::user();
         $product       = Product::find($validated['product_id']);
-        $item          = Item::find($validated['item_id']);
+        $item          = Item::find($validated['items_id']);
         $paymentMethod = PaymentMethod::find($validated['payment_id']);
 
         if (!$product || !$item || !$paymentMethod) {
@@ -70,7 +70,7 @@ class OrdersController extends Controller
                 $order->quantity      = 1;
                 $order->total         = $item->price;
                 $order->product_id    = $validated['product_id'];
-                $order->item_id       = $validated['item_id'];
+                $order->item_id       = $validated['items_id'];
                 $order->customer_data = $validated['customer_data'];
                 $order->payment_method = $validated['payment_id'];
 
