@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\PaymentSms;
 use Illuminate\Http\Request;
 
-class  PaymentSMSController extends Controller
+class PaymentSMSController extends Controller
 {
     public function index(Request $request)
     {
