@@ -71,8 +71,8 @@ class OrdersController extends Controller
 
             if ($order->product->name === 'Wallet') {
                 // Wallet type order → Add balance only when moving to delivered
-                if ($previousStatus === 'hold' || $previousStatus === 'processing') {
-                    if ($validated['status'] === 'delivered') {
+                if ($previousStatus == 'hold' || $previousStatus == 'processing') {
+                    if ($validated['status'] == 'delivered') {
                         $user->increment('wallet', $order->total);
                         WalletTransaction::create([
                             'user_id'   => $user->id,
