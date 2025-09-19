@@ -39,7 +39,7 @@ class OrdersController extends Controller
 
         $validated = $request->validate($rules);
 
-        $user          = Auth::user();
+        $user          = $request->user();
         $product       = Product::find($validated['product_id']);
         $item          = Item::find($validated['items_id']);
         $paymentMethod = PaymentMethod::find($validated['method_id']);
