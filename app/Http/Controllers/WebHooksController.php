@@ -61,10 +61,9 @@ class WebHooksController extends Controller
 
             if ($message != null) {
                 $order->order_note = $message;
-                return Str::contains($message, 'Invalid player ID');
                 if (Str::contains($message, 'Invalid player ID')){
                     $order->status = 'refunded';
-                    if ($user) {
+                    if ($user != null) {
                         $user->increment('wallet', $order->total);
                         $user->save();
                         WalletTransaction::create([
