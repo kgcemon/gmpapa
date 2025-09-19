@@ -65,7 +65,6 @@ class CodesController extends Controller
             ->with('variant')->where('product_id', $id)->get();
 
         $product = Product::where('id', $id)->first() ?? '';
-        return $codesCountPerVariant;
         return view('admin.pages.codes.codes', compact('product','codesCountPerVariant'));
     }
 
