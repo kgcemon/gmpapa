@@ -25,4 +25,9 @@ class Code extends Model
     {
         return $this->hasOne(Item::class, 'id', 'item_id')->select('id', 'name','denom');
     }
+
+    public function codeByDenom()
+    {
+        return $this->hasOne(Item::class, 'denom', 'denom');
+    }
 }
