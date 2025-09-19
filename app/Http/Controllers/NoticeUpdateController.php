@@ -10,7 +10,7 @@ class NoticeUpdateController extends Controller
     public function index()
     {
         $notice = NoticeUpdate::latest()->first();
-        return view('pages.notice.index', compact('notice'));
+        return view('admin.pages.notice.index', compact('notice'));
     }
 
     public function store(Request $request)
