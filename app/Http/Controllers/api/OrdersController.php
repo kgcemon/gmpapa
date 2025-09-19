@@ -7,10 +7,13 @@ use App\Http\Requests\StoreOrderRequest;
 use App\Models\Item;
 use App\Models\Order;
 use App\Models\PaymentMethod;
+use App\Models\PaymentSms;
 use App\Models\Product;
 use App\Models\WalletTransaction;
 use App\Services\WalletService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class OrdersController extends Controller
 {
@@ -23,102 +26,134 @@ class OrdersController extends Controller
 
     public function store(StoreOrderRequest $request)
     {
-        try {
-            $status = 'hold';
-            $validated = $request->validated();
-            $user = auth('sanctum')->user();
 
-            $payments = PaymentMethod::where('id', $validated['method_id'])->first();
-            if ($payments == null) {
-                return response()->json([
-                    'status'  => false,
-                    'message' => 'Payment method not found',
-                ]);
-            }
+        // Step 1: Basic validation rules
+        $rules = [
+            'product_id'     => 'required|exists:products,id',
+            'item_id'        => 'required|exists:items,id',
+            'customer_data'  => 'required',
+            'payment_id'     => 'required|exists:payment_methods,id',
+            'transaction_id' => 'nullable|string',
+            'payment_number' => 'nullable|string',
+        ];
 
-            $product = Product::find($validated['product_id']);
-            if (!$product) {
-                return response()->json([
-                    'status'  => false,
-                    'message' => 'Product not found',
-                ], 404);
-            }
+        $validated = $request->validate($rules);
 
-            if ($validated['items_id']) {
-                $item = Item::find($validated['items_id']);
-                if (!$item) {
-                    return response()->json([
-                        'status'  => false,
-                        'message' => 'Item not found',
-                    ]);
-                }
-            } else {
-                $item = null;
-            }
+        $user          = Auth::user();
+        $product       = Product::find($validated['product_id']);
+        $item          = Item::find($validated['item_id']);
+        $paymentMethod = PaymentMethod::find($validated['payment_id']);
 
-            $totalPrice = $item ? $item->price * $validated['quantity'] : $product->price * $validated['quantity'];
-
-
-            if ($payments->method == 'Wallet' && $user) {
-                $deducted = $this->walletService->deductBalance($user, $totalPrice);
-                if (!$deducted) {
-                    return response()->json([
-                        'status'  => false,
-                        'message' => 'Insufficient wallet balance',
-                    ], 400);
-                }
-                WalletTransaction::create([
-                    'user_id'   => $user->id,
-                    'amount'    => $totalPrice,
-                    'type'      => 'debit',
-                    'description' => 'order'. $item->name ?? '',
-                    'status'    => 1,
-                ]);
-
-                $status = 'processing';
-            }
-
-            $order = new Order();
-            $order->product_id     = $product->id;
-            $order->quantity       = $validated['quantity'];
-            $order->total          = $totalPrice;
-            $order->item_id        = $item ? $item->id : null;
-            $order->customer_data  = $validated['customer_data'];
-            $order->others_data    = $validated['others'] ?? null;
-            $order->payment_method = $payments->id;
-            $order->transaction_id = $validated['transaction_id'] ?? null;
-            $order->number         = $validated['number'] ?? null;
-
-            if ($user) {
-                $order->user_id = $user->id;
-                $order->name    = $user->name;
-                $order->phone   = $user->phone;
-                $order->email   = $user->email;
-            } else {
-                $order->user_id = null;
-                $order->name    = $validated['name'];
-                $order->phone   = $validated['phone'];
-                $order->email   = $validated['email'] ?? null;
-            }
-            $order->status = $status;
-            $order->save();
-            $order->load('product');
-
-            Cache::forget('dashboardData');
-
-            return response()->json([
-                'status'       => true,
-                'message'      => 'Order placed successfully.',
-                'customer_data'=> $order->customer_data,
-                'others_data'  => $order->others_data ?? null,
-                'order'        => $order,
-            ], 201);
-
-        } catch (\Exception $exception) {
+        if (!$product || !$item || !$paymentMethod) {
             return response()->json([
                 'status'  => false,
-                'message' => $exception->getMessage(),
-            ]);
+                'message' => 'Invalid product, item, or payment method',
+            ], 404);
+        }
+
+        try {
+
+            return DB::transaction(function () use ($validated, $user, $product, $item, $paymentMethod, $request) {
+
+                // Duplicate trxID চেক (only if provided)
+                if (!empty($validated['transaction_id'])) {
+                    $checkDuplicate = Order::where('transaction_id', $validated['transaction_id'])->count();
+                    if ($checkDuplicate > 0) {
+                        return response()->json([
+                            'status'  => false,
+                            'message' => 'This transaction ID is already used.',
+                        ], 409);
+                    }
+                }
+
+                $order = new Order();
+                $order->quantity      = 1;
+                $order->total         = $item->price;
+                $order->product_id    = $validated['product_id'];
+                $order->item_id       = $validated['item_id'];
+                $order->customer_data = $validated['customer_data'];
+                $order->payment_method = $validated['payment_id'];
+
+                if ($user) {
+                    $order->user_id = $user->id;
+                    $order->name    = $user->name;
+                    $order->email   = $user->email;
+                } else {
+                    $order->user_id = null;
+                    $order->name    = "guest";
+                }
+
+                // ✅ Wallet Payment
+                if ($paymentMethod->method === 'Wallet') {
+                    if (!$user) {
+                        return response()->json([
+                            'status'  => false,
+                            'message' => "Wallet payment requires login.",
+                        ], 401);
+                    }
+
+                    if ($user->wallet < $item->price) {
+                        return response()->json([
+                            'status'  => false,
+                            'message' => "আপনার ওয়ালেটে যথেষ্ট টাকা নেই। দয়া করে টাকা এড করে আবার চেষ্টা করুন।",
+                        ]);
+                    }
+
+                    $user->wallet -= $item->price;
+                    WalletTransaction::create([
+                        'user_id'   => $user->id,
+                        'amount'    => $item->price,
+                        'type'      => 'debit',
+                        'description' => "Order for $item->name",
+                        'status'    => 1,
+                    ]);
+                    $user->save();
+                    $order->status = 'processing';
+
+                } else {
+                    $paySMS = null;
+                    if (!empty($validated['transaction_id'])) {
+                        $paySMS = PaymentSms::where('trxID', $validated['transaction_id'])
+                            ->where('amount', '>=', (integer)$item->price)
+                            ->where('status', 0)
+                            ->first();
+                    }
+
+                    if ($paySMS != null) {
+                        $order->transaction_id = $paySMS->trxID;
+                        $order->number         = $paySMS->number;
+                        $paySMS->status = 1;
+                        $paySMS->save();
+                        $order->status         = 'processing';
+                    } else {
+                        if (empty($validated['transaction_id']) || empty($validated['payment_number'])) {
+                            return response()->json([
+                                'status'  => false,
+                                'message' => 'Transaction ID and payment number are required for this payment method.',
+                            ], 422);
+                        }
+
+                        $order->transaction_id = $validated['transaction_id'];
+                        $order->number         = $validated['payment_number'];
+                        $order->status         = 'hold';
+                    }
+                }
+
+                $order->save();
+
+                return response()->json([
+                    'status'  => true,
+                    'message' => 'Order created successfully',
+                    'order'   => $order,
+                ], 201);
+
+            });
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Something went wrong: ' . $e->getMessage(),
+            ], 500);
         }
     }
 }
