@@ -32,7 +32,7 @@ class OrdersController extends Controller
             'product_id'     => 'required|exists:products,id',
             'items_id'        => 'required|exists:items,id',
             'customer_data'  => 'required',
-            'payment_id'     => 'required|exists:payment_methods,id',
+            'method_id'     => 'required|exists:payment_methods,id',
             'transaction_id' => 'nullable|string',
             'payment_number' => 'nullable|string',
         ];
@@ -42,7 +42,7 @@ class OrdersController extends Controller
         $user          = Auth::user();
         $product       = Product::find($validated['product_id']);
         $item          = Item::find($validated['items_id']);
-        $paymentMethod = PaymentMethod::find($validated['payment_id']);
+        $paymentMethod = PaymentMethod::find($validated['method_id']);
 
         if (!$product || !$item || !$paymentMethod) {
             return response()->json([
@@ -72,7 +72,7 @@ class OrdersController extends Controller
                 $order->product_id    = $validated['product_id'];
                 $order->item_id       = $validated['items_id'];
                 $order->customer_data = $validated['customer_data'];
-                $order->payment_method = $validated['payment_id'];
+                $order->payment_method = $validated['method_id'];
 
                 if ($user) {
                     $order->user_id = $user->id;
