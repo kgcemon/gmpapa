@@ -167,7 +167,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="text-center mb-3">
-                        <h4 class="fw-bold">Codmshop</h4>
+                        <h4 class="fw-bold">GMPAPA</h4>
                         <small class="text-muted">Customer Receipt</small>
                         <hr>
                     </div>

@@ -89,7 +89,7 @@
     </div>
 
     <div class="footer">
-        <p><strong>Codmshop</strong> ব্যবহার করার জন্য ধন্যবাদ।
+        <p><strong>GMPAPA</strong> ব্যবহার করার জন্য ধন্যবাদ।
             সর্বশেষ আপডেট ও অফার পেতে আমাদের সাথে থাকুন।</p>
     </div>
 </div>
