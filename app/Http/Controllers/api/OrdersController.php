@@ -34,7 +34,7 @@ class OrdersController extends Controller
             'customer_data'  => 'required',
             'method_id'     => 'required|exists:payment_methods,id',
             'transaction_id' => 'nullable|string',
-            'payment_number' => 'nullable|string',
+            'number' => 'nullable|string',
         ];
 
         $validated = $request->validate($rules);
@@ -126,7 +126,7 @@ class OrdersController extends Controller
                         $paySMS->save();
                         $order->status         = 'processing';
                     } else {
-                        if (empty($validated['transaction_id']) || empty($validated['payment_number'])) {
+                        if (empty($validated['transaction_id']) || empty($validated['number'])) {
                             return response()->json([
                                 'status'  => false,
                                 'message' => 'Transaction ID and payment number are required for this payment method.',
@@ -134,7 +134,7 @@ class OrdersController extends Controller
                         }
 
                         $order->transaction_id = $validated['transaction_id'];
-                        $order->number         = $validated['payment_number'];
+                        $order->number         = $validated['number'];
                         $order->status         = 'hold';
                     }
                 }
