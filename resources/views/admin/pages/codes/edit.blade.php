@@ -41,7 +41,7 @@
                             <td>{{ $code->id }}</td>
                             <td style="font-size: 5px">{{ $code->code }}</td>
                             <td>{{ $code->denom ?? '-' }}</td>
-                            <td>{{ $code->order_id ?? '-' }}</td>
+                            <td><a href="/admin/orders/{{$code->order_id}}">{{ $code->order_id ?? '' }}</a> </td>
                             <td>{{ $code->status }}</td>
                             <td>
                                 <div class="d-flex justify-content-center gap-2">

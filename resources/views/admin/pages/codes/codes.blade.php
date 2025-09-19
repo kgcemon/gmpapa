@@ -26,21 +26,21 @@
                         <thead class="table-dark">
                         <tr>
                             <th>Variant</th>
-                            <th>Unused</th>
+                            <th>Unuse/Used</th>
                             <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @forelse($unusedCodesCountPerVariant as $row)
+                        @forelse($codesCountPerVariant as $row)
                             <tr>
-                                <td>{{ $row->variant->name ?? 'Unknown Variant' }}</td>
+                                <td>{{ $row->codeByDenom->name ?? 'Unknown Variant' }}</td>
                                 <td>
                                     <strong class="{{ $row->total_unused < 3 ? 'text-danger' : '' }}">
-                                        {{ $row->total_unused }}
+                                        {{ $row->total_unused }} / {{$row->total_used}}
                                     </strong>
                                 </td>
                                 <td>
-                                    <a href="/admin/code/{{$row->variant->denom}}">View</a>
+                                    <a href="/admin/code/{{$row->codeByDenom->denom}}">View</a>
                                 </td>
                             </tr>
                         @empty
