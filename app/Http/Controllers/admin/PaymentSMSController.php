@@ -191,6 +191,7 @@ class PaymentSMSController extends Controller
             ]);
         } catch (\Exception $e) {
             \Log::error("PaymentSms Insert Error: " . $e->getMessage());
+            \Log::error("Amount: " . $amount);
             return $sendResponse(false, $e->getMessage());
         }
 
