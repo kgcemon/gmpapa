@@ -21,7 +21,7 @@ class UserOrderController extends Controller
             'lastpage' => $orders->lastPage(),
             'first'    => $orders->firstItem(),
             'from'     => $orders->firstItem(),
-
+            'perPage'  => $orders->perPage(),
         ]);
     }
 }

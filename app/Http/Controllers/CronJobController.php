@@ -75,7 +75,7 @@ class CronJobController extends Controller
                             'Content-Type' => 'application/json',
                             'Accept' => 'application/json',
                             'RA-SECRET-KEY' => 'kpDvM4m9AOTl0+4Gcnvm7a+VgLJFjSNvuDVC9Jl6wH/RxXJqqCb0RQ==',
-                        ])->post('https://autonow.codmshopbd.com/topup', [
+                        ])->post('http://15.235.147.4/topup', [
                             "playerId"   => $order->customer_data,
                             "denom"      => $d,
                             "type"       => $type,
