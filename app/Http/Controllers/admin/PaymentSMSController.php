@@ -185,13 +185,12 @@ class PaymentSMSController extends Controller
                 'sender'     => $sender,
                 'number'     => $number,
                 'trxID'      => $txn_id,
-                'amount'     => $amount,
+                'amount'     => (integer)$amount,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
         } catch (\Exception $e) {
             \Log::error("PaymentSms Insert Error: " . $e->getMessage());
-            \Log::error("PaymentSms Insert Error: " . $amount);
             return $sendResponse(false, $e->getMessage());
         }
 
