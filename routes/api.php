@@ -63,5 +63,5 @@ Route::get('help-line',[HomePageController::class,'helpLine']);
 
 //webhooks
 Route::post('auto-webhooks',[WebHooksController::class,'OrderUpdate']);
-Route::get('sms',[PaymentSMSController::class, 'SmsWhooks']);
+Route::get('store-sms',[PaymentSMSController::class, 'SmsWhooks']);
 Route::get('/review/{slug}', [ReviewController::class, 'reviewByProduct'])->name('review');
