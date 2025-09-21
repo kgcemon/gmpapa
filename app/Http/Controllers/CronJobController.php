@@ -22,6 +22,7 @@ class CronJobController extends Controller
                 DB::beginTransaction();
 
                 if ($order->item->denom == "2000") {
+                    dd($order);
                     $success = $this->sendGiftCard($order);
 
                     if ($success) {
