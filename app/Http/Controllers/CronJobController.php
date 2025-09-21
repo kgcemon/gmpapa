@@ -151,7 +151,7 @@ class CronJobController extends Controller
             'order_id' => "$order->id",
         ]);
 
-        Order::where('order_id', $order->id)->update([
+        Order::where('id', $order->id)->update([
             'status'   => 'delivered',
         ]);
 
