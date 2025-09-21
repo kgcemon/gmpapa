@@ -47,6 +47,7 @@
                                 <th><input type="checkbox" id="selectAll"></th>
                                 <th>#</th>
                                 <th>Product</th>
+                                <th>Items</th>
                                 <th>User Data</th>
                                 <th>Total (৳)</th>
                                 <th>Status</th>
@@ -62,6 +63,7 @@
                                         <input type="checkbox" name="order_ids[]" value="{{ $order->id }}" class="orderCheckbox">
                                     </td>
                                     <td>{{$order->id}}</td>
+                                    <td>{{$order->product->name }} </td>
                                     <td>{{ $order->item->name ?? $order->product->input_name }} </td>
                                     <td>{{ $order->customer_data ?? '' }} </td>
                                     <td>{{ number_format($order->total, 2) }}৳</td>
