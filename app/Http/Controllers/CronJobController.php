@@ -145,6 +145,8 @@ class CronJobController extends Controller
             ];
         })->toArray();
 
+        dd($pins);
+
         Code::whereIn('id', $codes->pluck('id'))->update([
             'status'   => 'used',
             'order_id' => $order->id,
