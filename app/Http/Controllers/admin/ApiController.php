@@ -14,7 +14,7 @@ class ApiController extends Controller
     public function index()
     {
         $apis = Api::all();
-        return view('admin.apis.index', compact('apis'));
+        return view('admin.api', compact('apis'));
     }
 
     /**
