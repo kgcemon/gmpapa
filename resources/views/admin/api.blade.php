@@ -142,20 +142,22 @@
             document.getElementById('addApiForm').addEventListener('submit', function(e) {
                 e.preventDefault()
                 const formData = new FormData(this)
+
                 fetch("{{ route('admin.apis.store') }}", {
-                    method: "POST",
-                    headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}'},
-                    body: formData
+                    method: "POST", // Make sure it's POST
+                    body: formData   // Don't set headers manually for FormData
                 })
                     .then(res => res.json())
                     .then(data => {
+                        const toastEl = document.getElementById('apiToast')
+                        const toast = new bootstrap.Toast(toastEl)
                         if(data.success) {
                             toastEl.classList.remove('bg-danger')
                             toastEl.classList.add('bg-success')
                             document.getElementById('toastMessage').innerText = data.success
                             toast.show()
                             this.reset()
-                            location.reload() // Optional: you can dynamically append row instead of reload
+                            location.reload() // optional: append row dynamically instead
                         } else {
                             toastEl.classList.remove('bg-success')
                             toastEl.classList.add('bg-danger')
@@ -163,7 +165,16 @@
                             toast.show()
                         }
                     })
+                    .catch(err => {
+                        const toastEl = document.getElementById('apiToast')
+                        const toast = new bootstrap.Toast(toastEl)
+                        toastEl.classList.remove('bg-success')
+                        toastEl.classList.add('bg-danger')
+                        document.getElementById('toastMessage').innerText = 'Something went wrong!'
+                        toast.show()
+                    })
             })
+
 
             // EDIT API
             document.querySelectorAll('.editApiForm').forEach(form => {
