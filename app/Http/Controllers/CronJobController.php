@@ -21,8 +21,16 @@ class CronJobController extends Controller
             foreach ($orders as $order) {
                 DB::beginTransaction();
 
-                if ($order->item->denom == "2000"){
-                    return  $this->sendGiftCard($order);
+                if ($order->item->denom == "2000") {
+                    $success = $this->sendGiftCard($order);
+
+                    if ($success) {
+                        DB::commit();
+                    } else {
+                        DB::rollBack();
+                    }
+
+                    continue;
                 }
 
                 $order = Order::lockForUpdate()->find($order->id);
