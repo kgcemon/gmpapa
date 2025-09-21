@@ -14,112 +14,126 @@ class CronJobController extends Controller
 {
     public function freeFireAutoTopUpJob()
     {
-        $orders = Order::where('status', 'processing')->whereNull('order_note')->limit(4)->get();
 
+        $lockFile = storage_path('locks/freefire_cron.lock');
+
+        if (file_exists($lockFile)) {
+            exit("Another instance is running.");
+        }
+
+        file_put_contents($lockFile, getmypid());
 
         try {
-            foreach ($orders as $order) {
-                DB::beginTransaction();
 
-                if ($order->item->denom === "2000") {
-                    $success = $this->sendGiftCard($order);
-                    if ($success) {
-                        DB::commit();
-                    } else {
-                        DB::rollBack();
+            $orders = Order::where('status', 'processing')->whereNull('order_note')->limit(4)->get();
+
+
+            try {
+                foreach ($orders as $order) {
+                    DB::beginTransaction();
+
+                    if ($order->item->denom === "2000") {
+                        $success = $this->sendGiftCard($order);
+                        if ($success) {
+                            DB::commit();
+                        } else {
+                            DB::rollBack();
+                        }
+
+                        continue;
                     }
 
-                    continue;
-                }
+                    $order = Order::lockForUpdate()->find($order->id);
 
-                $order = Order::lockForUpdate()->find($order->id);
-
-                if ($order->status !== 'processing' || $order->order_note !== null) {
-                    DB::rollBack();
-                    continue;
-                }
-
-                $denom = (string) $order->item->denom ?? '';
-
-                if ($denom == null) {
-                    DB::rollBack();
-                    continue;
-                }
-
-                $denoms = explode(',', $denom);
-
-
-                // Count input requirements (কতবার কোন denom দরকার)
-                $counts = array_count_values($denoms);
-
-                $missing = [];
-
-                foreach ($counts as $value => $needed) {
-                    $available = Code::where('denom', $value)->where('status', 'unused')
-                        ->count();
-
-                    if ($available < $needed) {
-                        $missing[$value] = [
-                            'needed'    => $needed,
-                            'available' => $available
-                        ];
-                    }
-                }
-
-
-                if ($missing) {
-                    DB::rollBack();
-                    continue;
-                }
-
-                foreach ($denoms as $d) {
-
-                    $code = Code::where('denom', $d)->where('status', 'unused')
-                        ->lockForUpdate()
-                        ->first();
-
-                    if (!$code) {
+                    if ($order->status !== 'processing' || $order->order_note !== null) {
                         DB::rollBack();
                         continue;
                     }
-                    $type = (Str::startsWith($code->code, 'UPBD')) ? 2 : ((Str::startsWith($code->code, 'BDMB')) ? 1 : 1);
 
-                    try {
-                        $response = Http::withHeaders([
-                            'Content-Type' => 'application/json',
-                            'Accept' => 'application/json',
-                            'RA-SECRET-KEY' => 'kpDvM4m9AOTl0+4Gcnvm7a+VgLJFjSNvuDVC9Jl6wH/RxXJqqCb0RQ==',
-                        ])->post('http://15.235.147.4/topup', [
-                            "playerId"   => $order->customer_data,
-                            "denom"      => $d,
-                            "type"       => $type,
-                            "voucherCode"=> $code->code,
-                            "webhook"    => "https://admin.gmpapa.com/api/auto-webhooks"
-                        ]);
+                    $denom = (string) $order->item->denom ?? '';
 
-                    }catch (\Exception $exception){$order->order_note = 'server error';}
-
-                    $data = $response->json();
-                    $uid = $data['uid'] ?? null;
-                    $order->status = 'Delivery Running';
-                    $order->order_note = $uid ?? null;
-                    $order->save();
-                    $code->status = 'used';
-                    $code->uid = $uid ?? null;
-                    $code->order_id = $order->id;
-                    if (empty($uid)){
-                        $code->active = false;
+                    if ($denom == null) {
+                        DB::rollBack();
+                        continue;
                     }
-                    $code->save();
+
+                    $denoms = explode(',', $denom);
+
+
+                    // Count input requirements (কতবার কোন denom দরকার)
+                    $counts = array_count_values($denoms);
+
+                    $missing = [];
+
+                    foreach ($counts as $value => $needed) {
+                        $available = Code::where('denom', $value)->where('status', 'unused')
+                            ->count();
+
+                        if ($available < $needed) {
+                            $missing[$value] = [
+                                'needed'    => $needed,
+                                'available' => $available
+                            ];
+                        }
+                    }
+
+
+                    if ($missing) {
+                        DB::rollBack();
+                        continue;
+                    }
+
+                    foreach ($denoms as $d) {
+
+                        $code = Code::where('denom', $d)->where('status', 'unused')
+                            ->lockForUpdate()
+                            ->first();
+
+                        if (!$code) {
+                            DB::rollBack();
+                            continue;
+                        }
+                        $type = (Str::startsWith($code->code, 'UPBD')) ? 2 : ((Str::startsWith($code->code, 'BDMB')) ? 1 : 1);
+
+                        try {
+                            $response = Http::withHeaders([
+                                'Content-Type' => 'application/json',
+                                'Accept' => 'application/json',
+                                'RA-SECRET-KEY' => 'kpDvM4m9AOTl0+4Gcnvm7a+VgLJFjSNvuDVC9Jl6wH/RxXJqqCb0RQ==',
+                            ])->post('http://15.235.147.4/topup', [
+                                "playerId"   => $order->customer_data,
+                                "denom"      => $d,
+                                "type"       => $type,
+                                "voucherCode"=> $code->code,
+                                "webhook"    => "https://admin.gmpapa.com/api/auto-webhooks"
+                            ]);
+
+                        }catch (\Exception $exception){$order->order_note = 'server error';}
+
+                        $data = $response->json();
+                        $uid = $data['uid'] ?? null;
+                        $order->status = 'Delivery Running';
+                        $order->order_note = $uid ?? null;
+                        $order->save();
+                        $code->status = 'used';
+                        $code->uid = $uid ?? null;
+                        $code->order_id = $order->id;
+                        if (empty($uid)){
+                            $code->active = false;
+                        }
+                        $code->save();
+                    }
+
+                    DB::commit();
                 }
 
-                DB::commit();
+                return 'Cron job run successfully';
+            } catch (\Exception $exception) {
+                DB::rollBack();
+                return $exception->getMessage();
             }
-
-            return 'Cron job run successfully';
-        } catch (\Exception $exception) {
-            DB::rollBack();
-            return $exception->getMessage();
+        } finally {
+            @unlink($lockFile);
         }
     }
 
