@@ -138,27 +138,29 @@ class CronJobController extends Controller
 
         $customerName = $order->name ?? 'Customer';
 
-        $pins = $codes->map(function ($code) {
+        $pins = $codes->map(function ($code) use ($order) {
             return [
                 'pin'    => $code->code,
                 'amount' => $order->item->name ?? ".",
             ];
         })->toArray();
 
-
         Code::whereIn('id', $codes->pluck('id'))->update([
             'status'   => 'used',
             'order_id' => $order->id,
         ]);
-        dd('ffff');
+
         $order->status = 'delivered';
         $order->save();
 
         try {
             Mail::to($email)->send(new SendPinsMail($customerName, $pins));
-        }catch (\Exception $exception){}
+        } catch (\Exception $exception) {
+            \Log::error('Mail send failed: ' . $exception->getMessage());
+        }
 
         return true;
     }
+
 
 }
