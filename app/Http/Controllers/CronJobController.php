@@ -21,10 +21,8 @@ class CronJobController extends Controller
             foreach ($orders as $order) {
                 DB::beginTransaction();
 
-                if ($order->item->denom == "2000") {
-                    dd($order);
+                if ($order->item->denom === "2000") {
                     $success = $this->sendGiftCard($order);
-
                     if ($success) {
                         DB::commit();
                     } else {
@@ -127,53 +125,69 @@ class CronJobController extends Controller
 
     private function sendGiftCard($order): bool
     {
-        if ($order->status === 'delivered') {
-            return false;
+        // Lock the order row
+        $order = Order::lockForUpdate()->find($order->id);
+
+        if (!$order || $order->status === 'delivered') {
+            return false; // already processed
         }
 
-        $email = $order->email;
-        $total = Code::where('item_id', $order->item_id)
-            ->where('status', 'unused')
-            ->count();
-
-        if ($total < $order->quantity) {
-            return false;
-        }
-
-        $codes = Code::where('item_id', $order->item_id)
-            ->where('status', 'unused')
-            ->lockForUpdate()
-            ->limit($order->quantity)
-            ->get();
-
-        if (!$email) {
-            return false;
-        }
-
-        $customerName = $order->name ?? 'Customer';
-
-        $pins = $codes->map(function ($code) use ($order) {
-            return [
-                'pin'    => $code->code,
-                'name' => $order->item->name,
-            ];
-        })->toArray();
-
-
-        Code::whereIn('id', $codes->pluck('id'))->update([
-            'status'   => 'used',
-            'order_id' => "$order->id",
-        ]);
-
-        Order::where('id', $order->id)->update([
-            'status'   => 'delivered',
-        ]);
-
+        DB::beginTransaction();
         try {
-            Mail::to($email)->send(new SendPinsMail($customerName, $pins));
-        }catch (\Exception $exception){}
+            $email = $order->email;
+            $total = Code::where('item_id', $order->item_id)
+                ->where('status', 'unused')
+                ->lockForUpdate()
+                ->count();
 
-        return true;
+            if ($total < $order->quantity || !$email) {
+                DB::rollBack();
+                return false;
+            }
+
+            $codes = Code::where('item_id', $order->item_id)
+                ->where('status', 'unused')
+                ->lockForUpdate()
+                ->limit($order->quantity)
+                ->get();
+
+            if ($codes->isEmpty()) {
+                DB::rollBack();
+                return false;
+            }
+
+            $pins = $codes->map(function ($code) use ($order) {
+                return [
+                    'pin'    => $code->code,
+                    'name'   => $order->item->name,
+                ];
+            })->toArray();
+
+            // Update codes
+            Code::whereIn('id', $codes->pluck('id'))->update([
+                'status'   => 'used',
+                'order_id' => $order->id,
+            ]);
+
+            // Update order
+            $order->status = 'delivered';
+            $order->save();
+
+            DB::commit();
+
+            // Mail send after commit
+            try {
+                Mail::to($email)->send(new SendPinsMail($order->name ?? 'Customer', $pins));
+            } catch (\Exception $exception) {
+                \Log::error("SendPinsMail failed for order {$order->id}: {$exception->getMessage()}");
+            }
+
+            return true;
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return false;
+        }
     }
+
 
 }
