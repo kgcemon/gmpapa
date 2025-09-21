@@ -35,6 +35,6 @@ class SendPinsMail extends Mailable
     public function build()
     {
         return $this->subject('Your PIN Codes')
-            ->view('emails.pins'); // Blade view created next
+            ->view('mail.pins'); // Blade view created next
     }
 }
