@@ -65,7 +65,7 @@ class OrdersController extends Controller
                 }
 
                 $order = new Order();
-                $order->quantity      = 1;
+                $order->quantity      = $request['quantity'] ?? 1;
                 $order->total         = $item->price;
                 $order->product_id    = $validated['product_id'];
                 $order->item_id       = $validated['items_id'];
