@@ -1,7 +1,7 @@
 @extends('admin.layouts.app')
 
 @section('content')
-    <div class="container mt-4 p-3">
+    <div class="container mt-4 p-3" style="padding: 15px!important;">
         <h4 class="fw-bold mb-3">API Settings</h4>
 
         <!-- Add Button -->
