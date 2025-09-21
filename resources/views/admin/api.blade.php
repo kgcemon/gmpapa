@@ -1,15 +1,15 @@
 @extends('admin.layouts.app')
 
 @section('content')
-    <div class="container mt-4">
+    <div class="container mt-4 p-3">
         <h4 class="fw-bold mb-3">API Settings</h4>
 
         <!-- Add Button -->
         <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addModal">Add New API</button>
 
-        <!-- Table -->
-        <div id="apiTable">
-            <table class="table table-bordered text-center align-middle">
+        <!-- Table Responsive -->
+        <div id="apiTable" class="table-responsive">
+            <table class="table table-bordered text-center align-middle table-hover">
                 <thead class="table-dark">
                 <tr>
                     <th>ID</th>
@@ -47,12 +47,12 @@
         </div>
     </div>
 
-    <!-- Toast -->
-    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-        <div id="apiToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <!-- Custom Toast -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055">
+        <div id="apiToast" class="toast align-items-center border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="d-flex">
-                <div class="toast-body" id="toastMessage"></div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                <div class="toast-body fw-bold" id="toastMessage"></div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
         </div>
     </div>
@@ -135,38 +135,29 @@
             const toastEl = document.getElementById('apiToast');
             const toast = new bootstrap.Toast(toastEl);
 
+            function showToast(message, success=true){
+                toastEl.className = 'toast align-items-center border-0 shadow-lg ' + (success ? 'bg-success text-white' : 'bg-danger text-white');
+                document.getElementById('toastMessage').innerText = message;
+                toast.show();
+            }
+
             // ADD API
             document.getElementById('addApiForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const formData = new FormData(this);
-                formData.append('_token', '{{ csrf_token() }}'); // append CSRF token
+                formData.append('_token', '{{ csrf_token() }}');
 
-                fetch("{{ route('admin.apis.store') }}", {
-                    method: "POST",
-                    body: formData
-                })
+                fetch("{{ route('admin.apis.store') }}", { method: "POST", body: formData })
                     .then(res => res.json())
                     .then(data => {
                         if(data.success) {
-                            toastEl.classList.remove('bg-danger');
-                            toastEl.classList.add('bg-success');
-                            document.getElementById('toastMessage').innerText = data.success;
-                            toast.show();
+                            showToast(data.success);
                             this.reset();
-                            location.reload(); // or dynamically append row
+                            location.reload();
                         } else {
-                            toastEl.classList.remove('bg-success');
-                            toastEl.classList.add('bg-danger');
-                            document.getElementById('toastMessage').innerText = data.error;
-                            toast.show();
+                            showToast(data.error, false);
                         }
-                    })
-                    .catch(() => {
-                        toastEl.classList.remove('bg-success');
-                        toastEl.classList.add('bg-danger');
-                        document.getElementById('toastMessage').innerText = 'Something went wrong!';
-                        toast.show();
-                    });
+                    }).catch(() => showToast('Something went wrong!', false));
             });
 
             // EDIT API
@@ -178,23 +169,14 @@
                     formData.append('_method', 'PUT');
                     formData.append('_token', '{{ csrf_token() }}');
 
-                    fetch(`/admin/apis/${id}`, {
-                        method: "POST",
-                        body: formData
-                    })
+                    fetch(`/admin/apis/${id}`, { method: "POST", body: formData })
                         .then(res => res.json())
                         .then(data => {
                             if(data.success) {
-                                toastEl.classList.remove('bg-danger');
-                                toastEl.classList.add('bg-success');
-                                document.getElementById('toastMessage').innerText = data.success;
-                                toast.show();
+                                showToast(data.success);
                                 location.reload();
                             } else {
-                                toastEl.classList.remove('bg-success');
-                                toastEl.classList.add('bg-danger');
-                                document.getElementById('toastMessage').innerText = data.error;
-                                toast.show();
+                                showToast(data.error, false);
                             }
                         });
                 });
@@ -209,28 +191,18 @@
                     const formData = new FormData();
                     formData.append('_token', '{{ csrf_token() }}');
 
-                    fetch(`/admin/apis/${id}`, {
-                        method: "POST",
-                        body: formData
-                    })
+                    fetch(`/admin/apis/${id}`, { method: "POST", body: formData })
                         .then(res => res.json())
                         .then(data => {
                             if(data.success) {
-                                toastEl.classList.remove('bg-danger');
-                                toastEl.classList.add('bg-success');
-                                document.getElementById('toastMessage').innerText = data.success;
-                                toast.show();
+                                showToast(data.success);
                                 document.getElementById('apiRow'+id).remove();
                             } else {
-                                toastEl.classList.remove('bg-success');
-                                toastEl.classList.add('bg-danger');
-                                document.getElementById('toastMessage').innerText = data.error;
-                                toast.show();
+                                showToast(data.error, false);
                             }
                         });
                 });
             });
         });
     </script>
-
 @endsection
