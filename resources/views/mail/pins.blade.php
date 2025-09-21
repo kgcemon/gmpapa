@@ -23,7 +23,7 @@
             <tr style="border-bottom: 1px solid #ddd;">
                 <td style="padding: 10px;">{{ $index + 1 }}</td>
                 <td style="padding: 10px; color: #e63946;"><b>{{ $item['pin'] }}</b></td>
-                <td style="padding: 10px;">{{ $item['amount'] }} ৳</td>
+                <td style="padding: 10px;">{{ $item['name'] }}</td>
             </tr>
         @endforeach
         </tbody>

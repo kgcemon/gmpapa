@@ -126,6 +126,10 @@ class CronJobController extends Controller
 
     private function sendGiftCard($order): bool
     {
+        if ($order->status === 'delivered') {
+            return false;
+        }
+
         $email = $order->email;
         $total = Code::where('item_id', $order->item_id)
             ->where('status', 'unused')
@@ -137,6 +141,7 @@ class CronJobController extends Controller
 
         $codes = Code::where('item_id', $order->item_id)
             ->where('status', 'unused')
+            ->lockForUpdate()
             ->limit($order->quantity)
             ->get();
 
@@ -146,10 +151,10 @@ class CronJobController extends Controller
 
         $customerName = $order->name ?? 'Customer';
 
-        $pins = $codes->map(function ($code) {
+        $pins = $codes->map(function ($code) use ($order) {
             return [
                 'pin'    => $code->code,
-                'amount' => $order->item->name ?? ".",
+                'name' => $order->item->name,
             ];
         })->toArray();
 
