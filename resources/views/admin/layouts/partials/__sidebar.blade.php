@@ -181,8 +181,8 @@
                     <div class="collapse" id="settings">
                         <ul class="nav nav-collapse">
                             <li><a href="/admin/payment-methods"><span class="sub-item {{ Str::contains(request()->path(), 'payment-methods') ? 'active' : '' }}">Payment Setting</span></a></li>
-                            <li><a href="/withdraws/settings"><span class="sub-item">Site Settings</span></a></li>
-                            <li><a href="/admin/settings/referral"><span class="sub-item">SEO Settings</span></a></li>
+                            <li><a href="/admin/notice"><span class="sub-item">Notice Settings</span></a></li>
+                            <li><a href="/admin/api-settings"><span class="sub-item">Api Settings</span></a></li>
                         </ul>
                     </div>
                 </li>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\admin\ApiController;
 use App\Http\Controllers\admin\CategoriesController;
 use App\Http\Controllers\admin\CodesController;
 use App\Http\Controllers\admin\DashboardController;
@@ -84,6 +85,12 @@ Route::middleware('auth')->prefix('admin')->as('admin.')->group(function () {
     Route::get('/notice', [NoticeUpdateController::class, 'index'])->name('notice.index');
     Route::post('/notice/store', [NoticeUpdateController::class, 'store'])->name('notice.store');
     Route::delete('/notice/{id}', [NoticeUpdateController::class, 'destroy'])->name('notice.destroy');
+
+    //apis
+    Route::get('/apis', [ApiController::class, 'index'])->name('apis.index');       // List APIs
+    Route::post('/apis', [ApiController::class, 'store'])->name('apis.store');      // Add API
+    Route::put('/apis/{api}', [ApiController::class, 'update'])->name('apis.update'); // Update API
+    Route::delete('/apis/{api}', [ApiController::class, 'destroy'])->name('apis.destroy');
 
 
 });

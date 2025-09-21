@@ -27,7 +27,6 @@ class CronJobController extends Controller
 
             $orders = Order::where('status', 'processing')->whereNull('order_note')->limit(4)->get();
 
-
             try {
                 foreach ($orders as $order) {
                     DB::beginTransaction();
@@ -132,7 +131,7 @@ class CronJobController extends Controller
                 DB::rollBack();
                 return $exception->getMessage();
             }
-        } finally {
+        }    finally {
             @unlink($lockFile);
         }
     }
