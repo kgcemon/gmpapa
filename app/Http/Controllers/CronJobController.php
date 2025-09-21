@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\SendPinsMail;
 use App\Models\Code;
 use App\Models\Order;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class CronJobController extends Controller
@@ -14,9 +16,14 @@ class CronJobController extends Controller
     {
         $orders = Order::where('status', 'processing')->whereNull('order_note')->limit(4)->get();
 
+
         try {
             foreach ($orders as $order) {
                 DB::beginTransaction();
+
+                if ($order->item->denom == "2000"){
+                    return  $this->sendGiftCard($order);
+                }
 
                 $order = Order::lockForUpdate()->find($order->id);
 
@@ -108,4 +115,45 @@ class CronJobController extends Controller
             return $exception->getMessage();
         }
     }
+
+    private function sendGiftCard($order): bool
+    {
+        $email = $order->email;
+        $total = Code::where('item_id', $order->item_id)
+            ->where('status', 'unused')
+            ->count();
+
+        if ($total < $order->quantity) {
+            return false;
+        }
+
+        $codes = Code::where('item_id', $order->item_id)
+            ->where('status', 'unused')
+            ->limit($order->quantity)
+            ->get();
+
+        if (!$email) {
+            return false;
+        }
+
+        $customerName = $order->name ?? 'Customer';
+
+        $pins = $codes->map(function ($code) {
+            return [
+                'pin'    => $code->code,
+            ];
+        })->toArray();
+
+        Code::whereIn('id', $codes->pluck('id'))->update([
+            'status'   => 'used',
+            'order_id' => $order->id,
+        ]);
+
+        try {
+            Mail::to($email)->send(new SendPinsMail($customerName, $pins));
+        }catch (\Exception $exception){}
+
+        return true;
+    }
+
 }

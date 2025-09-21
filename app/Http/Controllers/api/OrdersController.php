@@ -11,8 +11,6 @@ use App\Models\PaymentSms;
 use App\Models\Product;
 use App\Models\WalletTransaction;
 use App\Services\WalletService;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class OrdersController extends Controller
@@ -79,8 +77,10 @@ class OrdersController extends Controller
                     $order->name    = $user->name;
                     $order->email   = $user->email;
                 } else {
+                    $order->email = $request['email'] ?? null;
+                    $order->phone  = $request['phone'] ?? null;
                     $order->user_id = null;
-                    $order->name    = "guest";
+                    $order->name    = $request->input('name') ?? null;
                 }
 
                 // ✅ Wallet Payment
