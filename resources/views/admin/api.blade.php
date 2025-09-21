@@ -135,103 +135,104 @@
 @section('scripts')
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const toastEl = document.getElementById('apiToast')
-            const toast = new bootstrap.Toast(toastEl)
+            const toastEl = document.getElementById('apiToast');
+            const toast = new bootstrap.Toast(toastEl);
 
             // ADD API
             document.getElementById('addApiForm').addEventListener('submit', function(e) {
-                e.preventDefault()
-                const formData = new FormData(this)
+                e.preventDefault();
+                const formData = new FormData(this);
+                formData.append('_token', '{{ csrf_token() }}'); // append CSRF token
 
                 fetch("{{ route('admin.apis.store') }}", {
-                    method: "POST", // Make sure it's POST
-                    body: formData   // Don't set headers manually for FormData
+                    method: "POST",
+                    body: formData
                 })
                     .then(res => res.json())
                     .then(data => {
-                        const toastEl = document.getElementById('apiToast')
-                        const toast = new bootstrap.Toast(toastEl)
                         if(data.success) {
-                            toastEl.classList.remove('bg-danger')
-                            toastEl.classList.add('bg-success')
-                            document.getElementById('toastMessage').innerText = data.success
-                            toast.show()
-                            this.reset()
-                            location.reload() // optional: append row dynamically instead
+                            toastEl.classList.remove('bg-danger');
+                            toastEl.classList.add('bg-success');
+                            document.getElementById('toastMessage').innerText = data.success;
+                            toast.show();
+                            this.reset();
+                            location.reload(); // or dynamically append row
                         } else {
-                            toastEl.classList.remove('bg-success')
-                            toastEl.classList.add('bg-danger')
-                            document.getElementById('toastMessage').innerText = data.error
-                            toast.show()
+                            toastEl.classList.remove('bg-success');
+                            toastEl.classList.add('bg-danger');
+                            document.getElementById('toastMessage').innerText = data.error;
+                            toast.show();
                         }
                     })
-                    .catch(err => {
-                        const toastEl = document.getElementById('apiToast')
-                        const toast = new bootstrap.Toast(toastEl)
-                        toastEl.classList.remove('bg-success')
-                        toastEl.classList.add('bg-danger')
-                        document.getElementById('toastMessage').innerText = 'Something went wrong!'
-                        toast.show()
-                    })
-            })
-
+                    .catch(() => {
+                        toastEl.classList.remove('bg-success');
+                        toastEl.classList.add('bg-danger');
+                        document.getElementById('toastMessage').innerText = 'Something went wrong!';
+                        toast.show();
+                    });
+            });
 
             // EDIT API
             document.querySelectorAll('.editApiForm').forEach(form => {
                 form.addEventListener('submit', function(e) {
-                    e.preventDefault()
-                    const id = this.dataset.id
-                    const formData = new FormData(this)
-                    formData.append('_method', 'PUT')
+                    e.preventDefault();
+                    const id = this.dataset.id;
+                    const formData = new FormData(this);
+                    formData.append('_method', 'PUT');
+                    formData.append('_token', '{{ csrf_token() }}');
+
                     fetch(`/admin/apis/${id}`, {
                         method: "POST",
-                        headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}'},
                         body: formData
                     })
                         .then(res => res.json())
                         .then(data => {
                             if(data.success) {
-                                toastEl.classList.remove('bg-danger')
-                                toastEl.classList.add('bg-success')
-                                document.getElementById('toastMessage').innerText = data.success
-                                toast.show()
-                                location.reload()
+                                toastEl.classList.remove('bg-danger');
+                                toastEl.classList.add('bg-success');
+                                document.getElementById('toastMessage').innerText = data.success;
+                                toast.show();
+                                location.reload();
                             } else {
-                                toastEl.classList.remove('bg-success')
-                                toastEl.classList.add('bg-danger')
-                                document.getElementById('toastMessage').innerText = data.error
-                                toast.show()
+                                toastEl.classList.remove('bg-success');
+                                toastEl.classList.add('bg-danger');
+                                document.getElementById('toastMessage').innerText = data.error;
+                                toast.show();
                             }
-                        })
-                })
-            })
+                        });
+                });
+            });
 
             // DELETE API
             document.querySelectorAll('.deleteBtn').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    if(!confirm('Are you sure?')) return
-                    const id = this.dataset.id
+                    if(!confirm('Are you sure?')) return;
+                    const id = this.dataset.id;
+
+                    const formData = new FormData();
+                    formData.append('_token', '{{ csrf_token() }}');
+
                     fetch(`/admin/apis/${id}`, {
-                        method: "DELETE",
-                        headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}'}
+                        method: "POST",
+                        body: formData
                     })
                         .then(res => res.json())
                         .then(data => {
                             if(data.success) {
-                                toastEl.classList.remove('bg-danger')
-                                toastEl.classList.add('bg-success')
-                                document.getElementById('toastMessage').innerText = data.success
-                                toast.show()
-                                document.getElementById('apiRow'+id).remove()
+                                toastEl.classList.remove('bg-danger');
+                                toastEl.classList.add('bg-success');
+                                document.getElementById('toastMessage').innerText = data.success;
+                                toast.show();
+                                document.getElementById('apiRow'+id).remove();
                             } else {
-                                toastEl.classList.remove('bg-success')
-                                toastEl.classList.add('bg-danger')
-                                document.getElementById('toastMessage').innerText = data.error
-                                toast.show()
+                                toastEl.classList.remove('bg-success');
+                                toastEl.classList.add('bg-danger');
+                                document.getElementById('toastMessage').innerText = data.error;
+                                toast.show();
                             }
-                        })
-                })
-            })
-        })
+                        });
+                });
+            });
+        });
     </script>
 @endsection
