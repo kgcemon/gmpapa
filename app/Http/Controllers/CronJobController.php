@@ -141,7 +141,7 @@ class CronJobController extends Controller
         $pins = $codes->map(function ($code) {
             return [
                 'pin'    => $code->code,
-                'amount' => $code->items()->name??  ".",
+                'amount' => $order->item->name ?? ".",
             ];
         })->toArray();
 
