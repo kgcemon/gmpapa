@@ -148,6 +148,8 @@ class CronJobController extends Controller
             'status'   => 'used',
             'order_id' => $order->id,
         ]);
+        $order->status = 'delivered';
+        $order->save();
 
         try {
             Mail::to($email)->send(new SendPinsMail($customerName, $pins));
