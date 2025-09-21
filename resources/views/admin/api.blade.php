@@ -130,9 +130,6 @@
         </div>
     @endforeach
 
-@endsection
-
-@section('scripts')
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const toastEl = document.getElementById('apiToast');
@@ -235,4 +232,5 @@
             });
         });
     </script>
+
 @endsection
