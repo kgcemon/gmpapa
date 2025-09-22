@@ -193,8 +193,12 @@
 
                     const formData = new FormData();
                     formData.append('_token', '{{ csrf_token() }}');
+                    formData.append('_method', 'DELETE'); // 👈 Important
 
-                    fetch(`/admin/apis/${id}`, { method: "DELETE", body: formData })
+                    fetch(`/admin/apis/${id}`, {
+                        method: "POST", // 👈 POST use korben
+                        body: formData
+                    })
                         .then(res => res.json())
                         .then(data => {
                             if(data.success) {
