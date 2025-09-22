@@ -1,9 +1,9 @@
 @extends('admin.layouts.app')
 
 @section('content')
-    <div class="bg-success p-4">
+    <div class="p-2">
 
-    <div class="container mt-4 p-3">
+    <div class="container mt-4">
         <h4 class="fw-bold mb-3">API Settings</h4>
 
         <!-- Add Button -->
