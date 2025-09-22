@@ -1,7 +1,9 @@
 @extends('admin.layouts.app')
 
 @section('content')
-    <div class="container mt-4 p-3" style="padding: 15px!important; margin: 15px!important;">
+    <div class="bg-success p-4">
+
+    <div class="container mt-4 p-3">
         <h4 class="fw-bold mb-3">API Settings</h4>
 
         <!-- Add Button -->
@@ -45,6 +47,7 @@
                 </tbody>
             </table>
         </div>
+    </div>
     </div>
 
     <!-- Custom Toast -->
@@ -191,7 +194,7 @@
                     const formData = new FormData();
                     formData.append('_token', '{{ csrf_token() }}');
 
-                    fetch(`/admin/apis/${id}`, { method: "POST", body: formData })
+                    fetch(`/admin/apis/${id}`, { method: "DELETE", body: formData })
                         .then(res => res.json())
                         .then(data => {
                             if(data.success) {

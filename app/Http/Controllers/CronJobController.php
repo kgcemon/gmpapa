@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\SendPinsMail;
+use App\Models\Api;
 use App\Models\Code;
 use App\Models\Order;
 use Illuminate\Support\Facades\DB;
@@ -81,7 +82,11 @@ class CronJobController extends Controller
                         DB::rollBack();
                         continue;
                     }
-
+                    $apiData = Api::where('type', 'auto')->first();
+                    if (!$apiData) {
+                        DB::rollBack();
+                        continue;
+                    }
                     foreach ($denoms as $d) {
 
                         $code = Code::where('denom', $d)->where('status', 'unused')
@@ -98,8 +103,8 @@ class CronJobController extends Controller
                             $response = Http::withHeaders([
                                 'Content-Type' => 'application/json',
                                 'Accept' => 'application/json',
-                                'RA-SECRET-KEY' => 'kpDvM4m9AOTl0+4Gcnvm7a+VgLJFjSNvuDVC9Jl6wH/RxXJqqCb0RQ==',
-                            ])->post('http://15.235.147.4/topup', [
+                                'RA-SECRET-KEY' => $apiData->key,
+                            ])->post($apiData->url, [
                                 "playerId"   => $order->customer_data,
                                 "denom"      => $d,
                                 "type"       => $type,
