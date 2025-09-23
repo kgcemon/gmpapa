@@ -33,6 +33,7 @@ class OrdersController extends Controller
             'method_id'     => 'required|exists:payment_methods,id',
             'transaction_id' => 'nullable|string',
             'number' => 'nullable|string',
+            'quantity' => 'required|numeric|min:1',
         ];
 
         $validated = $request->validate($rules);
@@ -41,6 +42,7 @@ class OrdersController extends Controller
         $product       = Product::find($validated['product_id']);
         $item          = Item::find($validated['items_id']);
         $paymentMethod = PaymentMethod::find($validated['method_id']);
+
 
         if (!$product || !$item || !$paymentMethod) {
             return response()->json([
@@ -52,6 +54,7 @@ class OrdersController extends Controller
         try {
 
             return DB::transaction(function () use ($validated, $user, $product, $item, $paymentMethod, $request) {
+                $total = $item->price * $validated['quantity'];
 
                 // Duplicate trxID চেক (only if provided)
                 if (!empty($validated['transaction_id'])) {
@@ -66,7 +69,7 @@ class OrdersController extends Controller
 
                 $order = new Order();
                 $order->quantity      = $request['quantity'] ?? 1;
-                $order->total         = $item->price;
+                $order->total         = $total;
                 $order->product_id    = $validated['product_id'];
                 $order->item_id       = $validated['items_id'];
                 $order->customer_data = $validated['customer_data'];
@@ -92,17 +95,17 @@ class OrdersController extends Controller
                         ], 401);
                     }
 
-                    if ($user->wallet < $item->price) {
+                    if ($user->wallet < $total) {
                         return response()->json([
                             'status'  => false,
                             'message' => "আপনার ওয়ালেটে যথেষ্ট টাকা নেই। দয়া করে টাকা এড করে আবার চেষ্টা করুন।",
                         ]);
                     }
 
-                    $user->wallet -= $item->price;
+                    $user->wallet -= $total;
                     WalletTransaction::create([
                         'user_id'   => $user->id,
-                        'amount'    => $item->price,
+                        'amount'    => $total,
                         'type'      => 'debit',
                         'description' => "Order for $item->name",
                         'status'    => 1,
@@ -114,7 +117,7 @@ class OrdersController extends Controller
                     $paySMS = null;
                     if (!empty($validated['transaction_id'])) {
                         $paySMS = PaymentSms::where('trxID', $validated['transaction_id'])
-                            ->where('amount', '>=', (integer)$item->price)
+                            ->where('amount', '>=', (integer)$total)
                             ->where('status', 0)
                             ->first();
                     }
