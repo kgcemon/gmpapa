@@ -5,7 +5,7 @@
         <div class="card-body">
 
             <!-- Add New -->
-            <form action="{{ route('helpline.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('admin.helpline.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <input type="text" name="name" placeholder="Name" required>
                 <input type="url" name="url" placeholder="URL">
