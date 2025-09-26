@@ -174,7 +174,7 @@
             <div class="modal-content">
                 <form action="{{ route('admin.payment-methods.store') }}"
                       method="POST"
-                      enctype="multipart/form-data"> <!-- এখানে যুক্ত করা হলো -->
+                      enctype="multipart/form-data">
                     @csrf
                     <div class="modal-header bg-primary text-white">
                         <h5 class="modal-title">Add Payment Method</h5>
@@ -191,7 +191,8 @@
                         </div>
                         <div class="col-md-12">
                             <label class="form-label">Description</label>
-                            <textarea name="description" class="form-control" required></textarea>
+                            <!-- TinyMCE textarea -->
+                            <textarea name="description" id="tinyDescription" class="form-control" rows="5" required></textarea>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Number</label>
@@ -213,6 +214,19 @@
             </div>
         </div>
     </div>
+
+    <!-- TinyMCE CDN Script -->
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        tinymce.init({
+            selector: '#tinyDescription',
+            plugins: 'lists link image code table',
+            toolbar: 'undo redo | bold italic underline | bullist numlist | link image | code',
+            menubar: false,
+            height: 200
+        });
+    </script>
+
 
 
     <!-- JS for Copy -->
