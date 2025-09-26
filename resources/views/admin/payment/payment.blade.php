@@ -214,18 +214,18 @@
     </div>
 
     <!-- TinyMCE CDN Script & Init -->
-    <script src="https://cdn.tiny.cloud/1/rx33nh9mrg7zvtjoq6t8vd2ddu0l67uiw9stt1scrdjlb1dh/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            tinymce.init({
-                selector: '.tinymce-editor',
-                plugins: 'advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount',
-                toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
-                menubar: true,
-                height: 200,
-                content_style: "body { font-family:Arial,sans-serif; font-size:14px }"
-            });
-        });
-    </script>
+{{--    <script src="https://cdn.tiny.cloud/1/rx33nh9mrg7zvtjoq6t8vd2ddu0l67uiw9stt1scrdjlb1dh/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>--}}
+{{--    <script>--}}
+{{--        document.addEventListener("DOMContentLoaded", function() {--}}
+{{--            tinymce.init({--}}
+{{--                selector: '.tinymce-editor',--}}
+{{--                plugins: 'advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount',--}}
+{{--                toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',--}}
+{{--                menubar: true,--}}
+{{--                height: 200,--}}
+{{--                content_style: "body { font-family:Arial,sans-serif; font-size:14px }"--}}
+{{--            });--}}
+{{--        });--}}
+{{--    </script>--}}
 
 @endsection
