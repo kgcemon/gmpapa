@@ -218,14 +218,12 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             tinymce.init({
-                selector: '.tinymce-editor',        // আপনার textarea class
-                plugins: 'lists link image code table', // code plugin এখানে আছে
-                toolbar: 'undo redo | bold italic underline | forecolor backcolor | bullist numlist | link image | code',
-                menubar: false,
-                height: 200,
-                // এখানে আপনি চাইলে HTML clean up disable করতে পারেন
-                valid_elements: '*[*]', // সমস্ত HTML elements allow করবে
-                extended_valid_elements: 'a[href|target|rel],img[src|alt|width|height]' // optional
+                selector: '#description_editor', // Target the textarea by its ID
+                plugins: 'advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount',
+                toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+                height: 300, // Adjust height as needed
+                // You can add more options here, e.g., for image upload handling
+                // file_picker_callback: function (cb, value, meta) { ... }
             });
         });
     </script>
