@@ -4,6 +4,7 @@ use App\Http\Controllers\admin\ApiController;
 use App\Http\Controllers\admin\CategoriesController;
 use App\Http\Controllers\admin\CodesController;
 use App\Http\Controllers\admin\DashboardController;
+use App\Http\Controllers\admin\HelpLineController;
 use App\Http\Controllers\admin\OrdersController;
 use App\Http\Controllers\admin\PaymentMethodSettingController;
 use App\Http\Controllers\admin\PaymentSMSController;
@@ -95,6 +96,9 @@ Route::middleware('auth')->prefix('admin')->as('admin.')->group(function () {
 
     //review
     Route::resource('reviews', ReviewController::class)->except(['create','show','edit']);
+
+    //helpline
+    Route::resource('helpline', HelpLineController::class)->except(['create','show','edit']);
 
 });
 
