@@ -140,12 +140,20 @@
                     </a>
                 </li>
 
-                <!-- Withdraw -->
+                <!--  -->
                 <li class="nav-item {{ Str::contains(request()->path(), 'categories') ? 'active' : '' }}">
                     <a href="/admin/categories" class="d-flex justify-content-between align-items-center">
                         <div>
                             <i class="fas fa-cart-arrow-down"></i>
                             <p class="m-0">Categories</p>
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item {{ Str::contains(request()->path(), 'reviews') ? 'active' : '' }}">
+                    <a href="/admin/reviews" class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-cart-arrow-down"></i>
+                            <p class="m-0">Reviews</p>
                         </div>
                     </a>
                 </li>
