@@ -220,7 +220,7 @@
             tinymce.init({
                 selector: '.tinymce-editor',
                 plugins: 'lists link image code table',
-                toolbar: 'undo redo | bold italic underline | bullist numlist | link image | code',
+                toolbar: 'undo redo | bold italic underline | forecolor backcolor | bullist numlist | link image | code',
                 menubar: false,
                 height: 200
             });
