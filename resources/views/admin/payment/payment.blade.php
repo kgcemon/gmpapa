@@ -214,7 +214,7 @@
     </div>
 
     <!-- TinyMCE CDN Script & Init -->
-    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+{{--    <script src="https://cdn.tiny.cloud/1/rx33nh9mrg7zvtjoq6t8vd2ddu0l67uiw9stt1scrdjlb1dh/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>--}}
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             tinymce.init({
