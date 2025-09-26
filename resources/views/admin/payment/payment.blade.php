@@ -218,11 +218,14 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             tinymce.init({
-                selector: '.tinymce-editor',
-                plugins: 'lists link image code table',
+                selector: '.tinymce-editor',        // আপনার textarea class
+                plugins: 'lists link image code table', // code plugin এখানে আছে
                 toolbar: 'undo redo | bold italic underline | forecolor backcolor | bullist numlist | link image | code',
                 menubar: false,
-                height: 200
+                height: 200,
+                // এখানে আপনি চাইলে HTML clean up disable করতে পারেন
+                valid_elements: '*[*]', // সমস্ত HTML elements allow করবে
+                extended_valid_elements: 'a[href|target|rel],img[src|alt|width|height]' // optional
             });
         });
     </script>
