@@ -219,11 +219,13 @@
         document.addEventListener("DOMContentLoaded", function() {
             tinymce.init({
                 selector: '.tinymce-editor',
-                plugins: 'lists link image code table',
-                toolbar: 'undo redo | bold italic underline | bullist numlist | link image | code',
+                plugins: 'lists link image code table', // code plugin আছে
+                toolbar: 'undo redo | bold italic underline | forecolor backcolor | bullist numlist | link image | code',
                 menubar: false,
-                height: 200
+                height: 200,
+                content_style: "body { font-family:Arial,sans-serif; font-size:14px }"
             });
         });
     </script>
+
 @endsection
