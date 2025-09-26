@@ -138,6 +138,22 @@
                                 </div>
                             </div>
 
+                            <!-- TinyMCE CDN (একবার page-এ include করলে হবে, multiple modals এ ব্যবহার করা যাবে) -->
+                            <script src="https://cdn.tiny.cloud/1/rx33nh9mrg7zvtjoq6t8vd2ddu0l67uiw9stt1scrdjlb1dh/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+                            <script>
+                                // প্রতিটি edit modal textarea initialize করা
+                                @foreach($paymentMethods as $method)
+                                tinymce.init({
+                                    selector: '#tinyDescription{{ $method->id }}',
+                                    plugins: 'lists link image code table',
+                                    toolbar: 'undo redo | bold italic underline | bullist numlist | link image | code',
+                                    menubar: false,
+                                    height: 200
+                                });
+                                @endforeach
+                            </script>
+
+
                             <!-- Delete Modal -->
                             <div class="modal fade" id="deleteMethodModal{{ $method->id }}" tabindex="-1" aria-hidden="true">
                                 <div class="modal-dialog modal-sm modal-dialog-centered">
