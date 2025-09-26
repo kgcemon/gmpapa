@@ -4,15 +4,12 @@
     <div class="card shadow-sm border-0">
         <div class="card-body">
 
-            <!-- Add New -->
-            <form action="{{ route('admin.helpline.store') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                <input type="text" name="name" placeholder="Name" required>
-                <input type="url" name="url" placeholder="URL">
-                <input type="file" name="image" accept="image/*">
-                <button type="submit">Add Help Line</button>
-            </form>
-
+            <!-- Add Button -->
+            <div class="mb-3 text-end">
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addHelpLineModal">
+                    Add New Help Line
+                </button>
+            </div>
 
             <!-- Helpline Table -->
             <div class="table-responsive">
@@ -45,16 +42,18 @@
                                             data-bs-target="#editHelpLineModal"
                                             data-id="{{ $line->id }}"
                                             data-name="{{ $line->name }}"
-                                            data-url="{{ $line->url }}"
-                                    >Edit</button>
+                                            data-url="{{ $line->url }}">
+                                        Edit
+                                    </button>
 
                                     <!-- Delete Button -->
                                     <button type="button" class="btn btn-sm btn-danger"
                                             data-bs-toggle="modal"
                                             data-bs-target="#deleteHelpLineModal"
                                             data-id="{{ $line->id }}"
-                                            data-name="{{ $line->name }}"
-                                    ><i class="bi bi-trash"></i></button>
+                                            data-name="{{ $line->name }}">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -68,6 +67,39 @@
             <div class="mt-3">
                 {{ $lines->links('admin.layouts.partials.__pagination') }}
             </div>
+        </div>
+    </div>
+
+    <!-- Add Modal -->
+    <div class="modal fade" id="addHelpLineModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <form action="{{ route('admin.helpline.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Help Line</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Name</label>
+                            <input type="text" name="name" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">URL</label>
+                            <input type="url" name="url" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Image</label>
+                            <input type="file" name="image" class="form-control" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">Add Help Line</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -93,7 +125,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Image</label>
-                            <input type="file" name="image" class="form-control">
+                            <input type="file" name="image" class="form-control" accept="image/*">
                         </div>
                     </div>
                     <div class="modal-footer">
