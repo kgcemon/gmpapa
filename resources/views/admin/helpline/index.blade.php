@@ -4,6 +4,32 @@
     <div class="card shadow-sm border-0">
         <div class="card-body">
 
+            <!-- Success & Error Messages -->
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+            @if($errors->any())
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <ul class="mb-0">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
             <!-- Add Button -->
             <div class="mb-3 text-end">
                 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addHelpLineModal">
@@ -158,6 +184,7 @@
             </form>
         </div>
     </div>
+
 @endsection
 
 @push('scripts')
