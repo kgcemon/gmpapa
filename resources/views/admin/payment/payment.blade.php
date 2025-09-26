@@ -20,7 +20,6 @@
             </div>
         @endif
 
-
         <!-- Page Header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="fw-bold mb-0">Payment Methods</h4>
@@ -114,8 +113,8 @@
                                                 </div>
                                                 <div class="col-md-12">
                                                     <label class="form-label">Description</label>
-                                                    <!-- TinyMCE textarea with unique ID -->
-                                                    <textarea name="description" id="tinyDescription{{ $method->id }}" class="form-control">{{ $method->description }}</textarea>
+                                                    <!-- TinyMCE textarea with class -->
+                                                    <textarea name="description" class="form-control tinymce-editor">{{ $method->description }}</textarea>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label class="form-label">Number</label>
@@ -137,22 +136,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- TinyMCE CDN (একবার page-এ include করলে হবে, multiple modals এ ব্যবহার করা যাবে) -->
-                            <script src="https://cdn.tiny.cloud/1/rx33nh9mrg7zvtjoq6t8vd2ddu0l67uiw9stt1scrdjlb1dh/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-                            <script>
-                                // প্রতিটি edit modal textarea initialize করা
-                                @foreach($paymentMethods as $method)
-                                tinymce.init({
-                                    selector: '#tinyDescription{{ $method->id }}',
-                                    plugins: 'lists link image code table',
-                                    toolbar: 'undo redo | bold italic underline | bullist numlist | link image | code',
-                                    menubar: false,
-                                    height: 200
-                                });
-                                @endforeach
-                            </script>
-
 
                             <!-- Delete Modal -->
                             <div class="modal fade" id="deleteMethodModal{{ $method->id }}" tabindex="-1" aria-hidden="true">
@@ -189,9 +172,7 @@
     <div class="modal fade" id="addMethodModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
-                <form action="{{ route('admin.payment-methods.store') }}"
-                      method="POST"
-                      enctype="multipart/form-data">
+                <form action="{{ route('admin.payment-methods.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-header bg-primary text-white">
                         <h5 class="modal-title">Add Payment Method</h5>
@@ -208,8 +189,8 @@
                         </div>
                         <div class="col-md-12">
                             <label class="form-label">Description</label>
-                            <!-- TinyMCE textarea -->
-                            <textarea name="description" id="tinyDescription" class="form-control" rows="5" required></textarea>
+                            <!-- TinyMCE textarea with class -->
+                            <textarea name="description" class="form-control tinymce-editor" rows="5" required></textarea>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Number</label>
@@ -232,27 +213,17 @@
         </div>
     </div>
 
-    <!-- TinyMCE CDN Script -->
-    <script src="https://cdn.tiny.cloud/1/rx33nh9mrg7zvtjoq6t8vd2ddu0l67uiw9stt1scrdjlb1dh/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <!-- TinyMCE CDN Script & Init -->
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     <script>
-        tinymce.init({
-            selector: '#tinyDescription',
-            plugins: 'lists link image code table',
-            toolbar: 'undo redo | bold italic underline | bullist numlist | link image | code',
-            menubar: false,
-            height: 200
+        document.addEventListener("DOMContentLoaded", function() {
+            tinymce.init({
+                selector: '.tinymce-editor',
+                plugins: 'lists link image code table',
+                toolbar: 'undo redo | bold italic underline | bullist numlist | link image | code',
+                menubar: false,
+                height: 200
+            });
         });
     </script>
-
-
-
-    <!-- JS for Copy -->
-    <script>
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(function() {
-                alert("Copied: " + text);
-            });
-        }
-    </script>
-
 @endsection
