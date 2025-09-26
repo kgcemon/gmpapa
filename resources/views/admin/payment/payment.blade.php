@@ -218,11 +218,11 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             tinymce.init({
-                selector: '#description_editor', // Target the textarea by its ID
-                plugins: 'advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount',
-                toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
-                height: 200, // Adjust height as needed
-
+                selector: '.tinymce-editor',
+                plugins: 'lists link image code table',
+                toolbar: 'undo redo | bold italic underline | bullist numlist | link image | code',
+                menubar: false,
+                height: 200
             });
         });
     </script>
