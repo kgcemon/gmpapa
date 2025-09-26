@@ -221,7 +221,7 @@
                 selector: '.tinymce-editor',
                 plugins: 'lists link image code table', // code plugin আছে
                 toolbar: 'undo redo | bold italic underline | forecolor backcolor | bullist numlist | link image | code',
-                menubar: false,
+                menubar: true,
                 height: 200,
                 content_style: "body { font-family:Arial,sans-serif; font-size:14px }"
             });
