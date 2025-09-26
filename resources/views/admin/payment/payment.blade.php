@@ -219,8 +219,8 @@
         document.addEventListener("DOMContentLoaded", function() {
             tinymce.init({
                 selector: '.tinymce-editor',
-                plugins: 'lists link image code table', // code plugin আছে
-                toolbar: 'undo redo | bold italic underline | forecolor backcolor | bullist numlist | link image | code',
+                plugins: 'advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount',
+                toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
                 menubar: true,
                 height: 200,
                 content_style: "body { font-family:Arial,sans-serif; font-size:14px }"
