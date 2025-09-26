@@ -8,6 +8,7 @@ use App\Http\Controllers\admin\OrdersController;
 use App\Http\Controllers\admin\PaymentMethodSettingController;
 use App\Http\Controllers\admin\PaymentSMSController;
 use App\Http\Controllers\admin\ProductController;
+use App\Http\Controllers\admin\ReviewController;
 use App\Http\Controllers\admin\SliderController;
 use App\Http\Controllers\admin\SocialLinkController;
 use App\Http\Controllers\admin\UsersController;
@@ -92,6 +93,8 @@ Route::middleware('auth')->prefix('admin')->as('admin.')->group(function () {
     Route::put('/apis/{api}', [ApiController::class, 'update'])->name('apis.update'); // Update API
     Route::delete('/apis/{api}', [ApiController::class, 'destroy'])->name('apis.destroy');
 
+    //review
+    Route::resource('reviews', ReviewController::class)->except(['create','show','edit']);
 
 });
 
