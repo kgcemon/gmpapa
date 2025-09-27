@@ -150,4 +150,22 @@ class UsersController extends Controller
     {
         //
     }
+
+
+    public function walletTransactions($id)
+    {
+        $user = User::where('id', $id)->first();
+        if (!$user) {
+            return back()->with('error', 'User not found!');
+        }
+
+        $transactions = \App\Models\WalletTransaction::where('user_id', $user->id)
+            ->latest()
+            ->paginate(10);
+
+        $balance = $user->wallet;
+
+        return view('admin.wallet_transactions', compact('transactions', 'balance'));
+    }
+
 }

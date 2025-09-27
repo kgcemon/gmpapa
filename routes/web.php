@@ -100,6 +100,9 @@ Route::middleware('auth')->prefix('admin')->as('admin.')->group(function () {
     //helpline
     Route::resource('helpline', HelpLineController::class)->except(['create','show','edit']);
 
+    //user transaction
+    Route::get('user-transaction/{id}',[UsersController::class, 'walletTransactions']);
+
 });
 
 // Fallback Route for 404

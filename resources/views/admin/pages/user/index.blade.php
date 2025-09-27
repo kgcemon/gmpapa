@@ -51,7 +51,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->email }}</td>
-                                <td>{{ number_format($user->wallet ?? 0, 2) }} ৳</td>
+                                <td><a href="user-transaction/{{$user->id}}">{{ number_format($user->wallet ?? 0, 2) }}৳</a></td>
                                 <td>{{ $user->created_at ? $user->created_at->diffForHumans() : 'N/A' }}</td>
                                 <td>
                                     {{-- Edit Button to trigger modal --}}
