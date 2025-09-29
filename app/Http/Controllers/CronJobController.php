@@ -18,9 +18,9 @@ class CronJobController extends Controller
 
         $lockFile = storage_path('locks/freefire_cron.lock');
 
-//        if (file_exists($lockFile)) {
-//            exit("Another instance is running.");
-//        }
+        if (file_exists($lockFile)) {
+            exit("Another instance is running.");
+        }
 
         file_put_contents($lockFile, getmypid());
 
@@ -52,22 +52,24 @@ class CronJobController extends Controller
 
                     $denom = (string) $order->item->denom ?? '';
 
-                    if ($denom == null) {
+                    if (empty($denom)) {
                         DB::rollBack();
                         continue;
                     }
 
                     $denoms = explode(',', $denom);
 
+                    $allDenoms = [];
+                    for ($i = 0; $i < $order->quantity; $i++) {
+                        $allDenoms = array_merge($allDenoms, $denoms);
+                    }
 
-                    // Count input requirements (কতবার কোন denom দরকার)
-                    $counts = array_count_values($denoms);
+                    $counts = array_count_values($allDenoms);
 
                     $missing = [];
 
                     foreach ($counts as $value => $needed) {
-                        $available = Code::where('denom', $value)->where('status', 'unused')
-                            ->count();
+                        $available = Code::where('denom', $value)->where('status', 'unused')->count();
 
                         if ($available < $needed) {
                             $missing[$value] = [
@@ -77,17 +79,18 @@ class CronJobController extends Controller
                         }
                     }
 
-
                     if ($missing) {
                         DB::rollBack();
                         continue;
                     }
+
                     $apiData = Api::where('type', 'auto')->where('status', 1)->first();
                     if (!$apiData) {
                         DB::rollBack();
                         continue;
                     }
-                    foreach ($denoms as $d) {
+
+                    foreach ($allDenoms as $d) {
 
                         $code = Code::where('denom', $d)->where('status', 'unused')
                             ->lockForUpdate()
@@ -95,9 +98,11 @@ class CronJobController extends Controller
 
                         if (!$code) {
                             DB::rollBack();
-                            continue;
+                            continue 2;
                         }
-                        $type = (Str::startsWith($code->code, 'UPBD')) ? 2 : ((Str::startsWith($code->code, 'BDMB')) ? 1 : 1);
+
+                        $type = (Str::startsWith($code->code, 'UPBD')) ? 2 :
+                            ((Str::startsWith($code->code, 'BDMB')) ? 1 : 1);
 
                         try {
                             $response = Http::withHeaders([
@@ -112,21 +117,28 @@ class CronJobController extends Controller
                                 "webhook"    => "https://admin.gmpapa.com/api/auto-webhooks"
                             ]);
 
-                        }catch (\Exception $exception){$order->order_note = 'server error';}
+                        } catch (\Exception $exception) {
+                            $order->order_note = 'server error';
+                            DB::rollBack();
+                            continue 2;
+                        }
 
                         $data = $response->json();
                         $uid = $data['uid'] ?? null;
+
                         $order->status = 'Delivery Running';
                         $order->order_note = $uid ?? null;
                         $order->save();
+
                         $code->status = 'used';
                         $code->uid = $uid ?? null;
                         $code->order_id = $order->id;
-                        if (empty($uid)){
+                        if (empty($uid)) {
                             $code->active = false;
                         }
                         $code->save();
                     }
+
 
                     DB::commit();
                 }
