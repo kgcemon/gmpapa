@@ -182,7 +182,7 @@ class CronJobController extends Controller
             })->toArray();
 
             $pinsNote = collect($pins)->map(function ($pin) {
-                return $pin['pin'];
+                return $pin['pin'] . "\n";
             })->implode("\n \n");
 
             // Update codes
