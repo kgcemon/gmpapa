@@ -40,7 +40,8 @@
                                     </strong>
                                 </td>
                                 <td>
-                                    <a href="/admin/code/{{$row->codeByDenom->denom}}">View</a>
+{{--                                    <a href="/admin/code/{{$row->codeByDenom->denom}}">View</a>--}}
+                                    {{$row->codeByDenom->denom ?? ''}}
                                 </td>
                             </tr>
                         @empty
