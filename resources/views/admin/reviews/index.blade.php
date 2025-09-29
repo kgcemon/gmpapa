@@ -89,7 +89,7 @@
                                         data-bs-target="#deleteReviewModal"
                                         data-id="{{ $review->id }}"
                                         data-name="{{ $review->user->name ?? 'Unknown' }}"
-                                    ><i class="bi bi-trash"></i></button>
+                                    ><i class="fas fa-edit text-white"></i>
                                 </div>
                             </td>
                         </tr>

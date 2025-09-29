@@ -78,7 +78,7 @@
                                             data-bs-target="#deleteHelpLineModal"
                                             data-id="{{ $line->id }}"
                                             data-name="{{ $line->name }}">
-                                        <i class="bi bi-trash"></i>
+                                        <i class="fas fa-trash text-white"></i>
                                     </button>
                                 </div>
                             </td>

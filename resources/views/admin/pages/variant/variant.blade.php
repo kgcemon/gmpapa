@@ -48,6 +48,7 @@
                                     data-price="{{ $variant->price }}"
                                     data-sort="{{ $variant->sort }}"
                                     data-des="{{ $variant->description }}"
+                                    data-denom="{{ $variant->denom }}"
                                 >Edit</button>
 
 
@@ -193,6 +194,7 @@
                 const price = button.getAttribute('data-price');
                 const sort = button.getAttribute('data-sort');
                 const description = button.getAttribute('data-des');
+                const dnm = button.getAttribute('data-denom');
 
                 const form = document.getElementById('editVariantForm');
                 const nameInput = document.getElementById('editVariantName');
@@ -209,6 +211,7 @@
                 sorts.value = sort;
                 sorts.value = sort;
                 des.value = description;
+                denom.value = dnm;
             });
 
             const deleteModal = document.getElementById('deleteVariantModal');

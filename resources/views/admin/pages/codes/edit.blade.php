@@ -65,7 +65,7 @@
                                         data-id="{{ $code->id }}"
                                         data-name="{{ $code->code }}"
                                     >
-                                        <i class="bi bi-trash"></i>
+                                        <i class="fas fa-trash text-white"></i>
                                     </button>
                                 </div>
                             </td>
