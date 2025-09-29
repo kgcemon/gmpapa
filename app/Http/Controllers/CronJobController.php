@@ -34,6 +34,7 @@ class CronJobController extends Controller
 
                     if ($order->product->tags == "gift") {
                         $success = $this->sendGiftCard($order);
+                        return $success;
                         if ($success) {
                             DB::commit();
                         } else {
@@ -184,7 +185,6 @@ class CronJobController extends Controller
             $pinsNote = collect($pins)->map(function ($pin) {
                 return $pin['pin'] . ' - ' . $pin['name'];
             })->implode("\n");
-            return $pinsNote;
 
             // Update codes
             Code::whereIn('id', $codes->pluck('id'))->update([
