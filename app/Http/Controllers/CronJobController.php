@@ -18,9 +18,9 @@ class CronJobController extends Controller
 
         $lockFile = storage_path('locks/freefire_cron.lock');
 
-        if (file_exists($lockFile)) {
-            exit("Another instance is running.");
-        }
+//        if (file_exists($lockFile)) {
+//            exit("Another instance is running.");
+//        }
 
         file_put_contents($lockFile, getmypid());
 
