@@ -56,7 +56,6 @@ class CronJobController extends Controller
                         DB::rollBack();
                         continue;
                     }
-
                     $denoms = explode(',', $denom);
 
                     $allDenoms = [];
@@ -90,54 +89,46 @@ class CronJobController extends Controller
                         continue;
                     }
 
-                    foreach ($allDenoms as $d) {
+                 foreach ($allDenoms as $d) {
 
-                        $code = Code::where('denom', $d)->where('status', 'unused')
-                            ->lockForUpdate()
-                            ->first();
+                            $code = Code::where('denom', $d)->where('status', 'unused')
+                                ->lockForUpdate()
+                                ->first();
 
-                        if (!$code) {
-                            DB::rollBack();
-                            continue 2;
+                            if (!$code) {
+                                DB::rollBack();
+                                continue;
+                            }
+                            $type = (Str::startsWith($code->code, 'UPBD')) ? 2 : ((Str::startsWith($code->code, 'BDMB')) ? 1 : 1);
+
+                            try {
+                                $response = Http::withHeaders([
+                                    'Content-Type' => 'application/json',
+                                    'Accept' => 'application/json',
+                                    'RA-SECRET-KEY' => $apiData->key,
+                                ])->post($apiData->url, [
+                                    "playerId"   => $order->customer_data,
+                                    "denom"      => $d,
+                                    "type"       => $type,
+                                    "voucherCode"=> $code->code,
+                                    "webhook"    => "https://admin.gmpapa.com/api/auto-webhooks"
+                                ]);
+
+                            }catch (\Exception $exception){$order->order_note = 'server error';}
+
+                            $data = $response->json();
+                            $uid = $data['uid'] ?? null;
+                            $order->status = 'Delivery Running';
+                            $order->order_note = $uid ?? null;
+                            $order->save();
+                            $code->status = 'used';
+                            $code->uid = $uid ?? null;
+                            $code->order_id = $order->id;
+                            if (empty($uid)){
+                                $code->active = false;
+                            }
+                            $code->save();
                         }
-
-                        $type = (Str::startsWith($code->code, 'UPBD')) ? 2 :
-                            ((Str::startsWith($code->code, 'BDMB')) ? 1 : 1);
-
-                        try {
-                            $response = Http::withHeaders([
-                                'Content-Type' => 'application/json',
-                                'Accept' => 'application/json',
-                                'RA-SECRET-KEY' => $apiData->key,
-                            ])->post($apiData->url, [
-                                "playerId"   => $order->customer_data,
-                                "denom"      => $d,
-                                "type"       => $type,
-                                "voucherCode"=> $code->code,
-                                "webhook"    => "https://admin.gmpapa.com/api/auto-webhooks"
-                            ]);
-
-                        } catch (\Exception $exception) {
-                            $order->order_note = 'server error';
-                            DB::rollBack();
-                            continue 2;
-                        }
-
-                        $data = $response->json();
-                        $uid = $data['uid'] ?? null;
-
-                        $order->status = 'Delivery Running';
-                        $order->order_note = $uid ?? null;
-                        $order->save();
-
-                        $code->status = 'used';
-                        $code->uid = $uid ?? null;
-                        $code->order_id = $order->id;
-                        if (empty($uid)) {
-                            $code->active = false;
-                        }
-                        $code->save();
-                    }
 
 
                     DB::commit();
