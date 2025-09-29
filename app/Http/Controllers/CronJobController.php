@@ -33,8 +33,8 @@ class CronJobController extends Controller
                     DB::beginTransaction();
 
                     if ($order->product->tags == "gift") {
+                        dd('h');
                         $success = $this->sendGiftCard($order);
-                        return $success;
                         if ($success) {
                             DB::commit();
                         } else {
