@@ -33,7 +33,6 @@ class CronJobController extends Controller
                     DB::beginTransaction();
 
                     if ($order->product->tags == "gift") {
-                        dd('h');
                         $success = $this->sendGiftCard($order);
                         if ($success) {
                             DB::commit();
@@ -146,6 +145,7 @@ class CronJobController extends Controller
     {
         // Lock the order row
         $order = Order::lockForUpdate()->find($order->id);
+        dd($order);
 
         if (!$order || $order->status === 'delivered') {
             return false; // already processed
