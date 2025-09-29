@@ -145,7 +145,6 @@ class CronJobController extends Controller
     {
         // Lock the order row
         $order = Order::lockForUpdate()->find($order->id);
-        dd($order);
 
         if (!$order || $order->status === 'delivered') {
             return false; // already processed
@@ -169,6 +168,7 @@ class CronJobController extends Controller
                 ->lockForUpdate()
                 ->limit($order->quantity)
                 ->get();
+            dd($codes);
 
             if ($codes->isEmpty()) {
                 DB::rollBack();
