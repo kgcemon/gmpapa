@@ -50,8 +50,6 @@ class CronJobController extends Controller
                         continue;
                     }
 
-                    dd($order);
-
                     $denom = (string) $order->item->denom ?? '';
 
                     if (empty($denom)) {
@@ -59,6 +57,8 @@ class CronJobController extends Controller
                         continue;
                     }
                     $denoms = explode(',', $denom);
+
+                    dd($denoms);
 
                     $allDenoms = [];
                     for ($i = 0; $i < $order->quantity; $i++) {
