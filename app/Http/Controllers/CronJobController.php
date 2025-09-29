@@ -168,7 +168,6 @@ class CronJobController extends Controller
                 ->lockForUpdate()
                 ->limit($order->quantity)
                 ->get();
-            dd($codes);
 
             if ($codes->isEmpty()) {
                 DB::rollBack();
