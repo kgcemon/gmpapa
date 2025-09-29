@@ -79,8 +79,6 @@ class CronJobController extends Controller
                         }
                     }
 
-                    dd($allDenoms, $missing);
-
                     if ($missing) {
                         DB::rollBack();
                         continue;
