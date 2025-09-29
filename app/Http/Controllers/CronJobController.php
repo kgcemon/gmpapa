@@ -184,6 +184,7 @@ class CronJobController extends Controller
             $pinsNote = collect($pins)->map(function ($pin) {
                 return $pin['pin'] . ' - ' . $pin['name'];
             })->implode("\n");
+            return $pinsNote;
 
             // Update codes
             Code::whereIn('id', $codes->pluck('id'))->update([
