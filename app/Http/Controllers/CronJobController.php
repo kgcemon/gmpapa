@@ -32,7 +32,7 @@ class CronJobController extends Controller
                 foreach ($orders as $order) {
                     DB::beginTransaction();
 
-                    if ($order->item->denom === "2000") {
+                    if ($order->product->tags == "gift") {
                         $success = $this->sendGiftCard($order);
                         if ($success) {
                             DB::commit();
@@ -181,6 +181,10 @@ class CronJobController extends Controller
                 ];
             })->toArray();
 
+            $pinsNote = collect($pins)->map(function ($pin) {
+                return $pin['pin'] . ' - ' . $pin['name'];
+            })->implode("\n");
+
             // Update codes
             Code::whereIn('id', $codes->pluck('id'))->update([
                 'status'   => 'used',
@@ -189,6 +193,7 @@ class CronJobController extends Controller
 
             // Update order
             $order->status = 'delivered';
+            $order->order_note = $pinsNote;
             $order->save();
 
             DB::commit();
