@@ -51,6 +51,7 @@ class CronJobController extends Controller
                     }
 
                     $denom = (string) $order->item->denom ?? '';
+                    dd($denom);
 
                     if (empty($denom)) {
                         DB::rollBack();
@@ -58,7 +59,6 @@ class CronJobController extends Controller
                     }
                     $denoms = explode(',', $denom);
 
-                    dd($denoms);
 
                     $allDenoms = [];
                     for ($i = 0; $i < $order->quantity; $i++) {
