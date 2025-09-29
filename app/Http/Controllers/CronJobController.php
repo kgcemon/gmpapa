@@ -52,8 +52,7 @@ class CronJobController extends Controller
 
                     $denom = (string) $order->item->denom ?? '';
 
-                    if ($denom != null) {
-                        dd($denom);
+                    if ($denom == null) {
                         DB::rollBack();
                         continue;
                     }
