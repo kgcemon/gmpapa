@@ -78,6 +78,8 @@ class CronJobController extends Controller
                         }
                     }
 
+                    dd($missing);
+
                     if ($missing) {
                         DB::rollBack();
                         continue;
