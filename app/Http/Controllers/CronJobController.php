@@ -50,6 +50,8 @@ class CronJobController extends Controller
                         continue;
                     }
 
+                    dd($order);
+
                     $denom = (string) $order->item->denom ?? '';
 
                     if (empty($denom)) {
