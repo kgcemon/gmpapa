@@ -1,6 +1,28 @@
 @extends('admin.layouts.app')
 
 @section('content')
+    <script src="https://cdn.tiny.cloud/1/rx33nh9mrg7zvtjoq6t8vd2ddu0l67uiw9stt1scrdjlb1dh/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            tinymce.init({
+                selector: '.tinymce-editor',
+                plugins: 'advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount',
+                toolbar: 'undo redo | formatselect | bold italic forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | link image code | help',
+                menubar: true,
+                height: 200,
+                content_style: "body { font-family:Arial,sans-serif; font-size:14px }",
+                dialog_type: 'modal' // TinyMCE নিজের modal ব্যবহার করবে
+            });
+
+            // Bootstrap focus trap fix
+            $(document).on('focusin', function(e) {
+                if ($(e.target).closest(".tox-tinymce, .tox-tinymce-aux, .moxman-window, .tam-assetmanager-root").length) {
+                    e.stopImmediatePropagation();
+                }
+            });
+        });
+    </script>
+
     <div class="container-fluid">
         <br>
 
@@ -213,26 +235,5 @@
         </div>
     </div>
 
-    <!-- TinyMCE CDN Script & Init -->
-    <script src="https://cdn.tiny.cloud/1/rx33nh9mrg7zvtjoq6t8vd2ddu0l67uiw9stt1scrdjlb1dh/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            tinymce.init({
-                selector: '.tinymce-editor',
-                plugins: 'advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount',
-                toolbar: 'undo redo | formatselect | bold italic forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | link image code | help',
-                menubar: true,
-                height: 200,
-                content_style: "body { font-family:Arial,sans-serif; font-size:14px }"
-            });
-
-            // Bootstrap Modal + TinyMCE Fix
-            $(document).on('focusin', function(e) {
-                if ($(e.target).closest(".tox-tinymce-aux, .moxman-window, .tam-assetmanager-root").length) {
-                    e.stopImmediatePropagation();
-                }
-            });
-        });
-    </script>
 
 @endsection
