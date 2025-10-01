@@ -220,8 +220,12 @@
             tinymce.init({
                 selector: '.tinymce-editor',
                 plugins: 'advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount',
-                toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
-                height: 300,
+                toolbar: 'undo redo | formatselect | bold italic forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | link image code | help',
+                menubar: true,
+                height: 200,
+                link_title: true,             // title লিখার অপশন দিবে
+                default_link_target: '_blank', // ডিফল্টভাবে নতুন ট্যাবে খুলবে
+                content_style: "body { font-family:Arial,sans-serif; font-size:14px }"
             });
         });
     </script>
