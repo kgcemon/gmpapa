@@ -223,16 +223,13 @@
                 toolbar: 'undo redo | formatselect | bold italic forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | link image code | help',
                 menubar: true,
                 height: 200,
-                content_style: "body { font-family:Arial,sans-serif; font-size:14px }",
-                setup: function (editor) {
-                    editor.on('init', function () {
-                        // Bootstrap modal input fix
-                        $(document).on('focusin', function(e) {
-                            if ($(e.target).closest(".tox-tinymce, .tox-tinymce-aux, .moxman-window, .tam-assetmanager-root").length) {
-                                e.stopImmediatePropagation();
-                            }
-                        });
-                    });
+                content_style: "body { font-family:Arial,sans-serif; font-size:14px }"
+            });
+
+            // Bootstrap Modal + TinyMCE Fix
+            $(document).on('focusin', function(e) {
+                if ($(e.target).closest(".tox-tinymce-aux, .moxman-window, .tam-assetmanager-root").length) {
+                    e.stopImmediatePropagation();
                 }
             });
         });
