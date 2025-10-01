@@ -72,12 +72,20 @@ class AuthController extends Controller
     {
         $idToken = $request->input('token');
         $client = new Google_Client(['client_id' => env('GOOGLE_CLIENT_ID')]);
+
         try {
             $payload = $client->verifyIdToken($idToken);
             if ($payload) {
-                $name = $payload['name'];
-                $email = $payload['email'];
-                $avatar = $payload['picture'];
+                $name = $payload['name'] ?? 'Unknown';
+                $email = $payload['email'] ?? null;
+                $avatar = $payload['picture'] ?? null;
+
+                if (!$email) {
+                    return response()->json([
+                        'error' => true,
+                        'message' => 'Email not found in Google token'
+                    ], 400);
+                }
 
                 $user = User::firstOrCreate(
                     ['email' => $email],
@@ -85,7 +93,7 @@ class AuthController extends Controller
                         'name' => $name,
                         'email' => $email,
                         'image' => $avatar,
-                        'password' => random_int(10000, 99999),
+                        'password' => bcrypt(Str::random(10)),
                     ]
                 );
 
@@ -98,13 +106,18 @@ class AuthController extends Controller
                     'user' => $user,
                 ]);
             } else {
-                // Invalid token
-                return response()->json(['error' => true], 400);
+                return response()->json([
+                    'error' => true,
+                    'message' => 'Invalid Google token'
+                ], 400);
             }
         } catch (\Exception $e) {
             return response()->json([
+                'error' => true,
                 'message' => $e->getMessage(),
-                'error' => true], 400);
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+            ], 400);
         }
     }
 
