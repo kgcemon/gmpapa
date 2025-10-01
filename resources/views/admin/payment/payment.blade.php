@@ -1,28 +1,6 @@
 @extends('admin.layouts.app')
 
 @section('content')
-    <script src="https://cdn.tiny.cloud/1/rx33nh9mrg7zvtjoq6t8vd2ddu0l67uiw9stt1scrdjlb1dh/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            tinymce.init({
-                selector: '.tinymce-editor',
-                plugins: 'advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount',
-                toolbar: 'undo redo | formatselect | bold italic forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | link image code | help',
-                menubar: true,
-                height: 200,
-                content_style: "body { font-family:Arial,sans-serif; font-size:14px }",
-                dialog_type: 'modal' // TinyMCE নিজের modal ব্যবহার করবে
-            });
-
-            // Bootstrap focus trap fix
-            $(document).on('focusin', function(e) {
-                if ($(e.target).closest(".tox-tinymce, .tox-tinymce-aux, .moxman-window, .tam-assetmanager-root").length) {
-                    e.stopImmediatePropagation();
-                }
-            });
-        });
-    </script>
-
     <div class="container-fluid">
         <br>
 
@@ -97,67 +75,23 @@
                                 <td>
                                     <div class="d-flex justify-content-center gap-2">
                                         <!-- Edit -->
-                                        <button class="btn btn-sm btn-warning"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#editMethodModal{{ $method->id }}">
-                                            <i class="bi bi-pencil-square">Edit</i>
-                                        </button>
+                                        <a href="{{ route('admin.payment-methods.edit', $method->id) }}" class="btn btn-sm btn-warning">
+                                            <i class="bi bi-pencil-square"></i> Edit
+                                        </a>
 
                                         <!-- Delete -->
-                                        <button class="btn btn-sm btn-danger"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#deleteMethodModal{{ $method->id }}">
-                                            <i class="bi bi-trash">Delete</i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <!-- Edit Modal -->
-                            <div class="modal fade" id="editMethodModal{{ $method->id }}" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog modal-lg modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <form action="{{ route('admin.payment-methods.update', $method->id) }}" method="POST" enctype="multipart/form-data">
+                                        <form action="{{ route('admin.payment-methods.destroy', $method->id) }}" method="POST" onsubmit="return confirm('Are you sure?')">
                                             @csrf
-                                            @method('PUT')
-                                            <div class="modal-header bg-warning text-dark">
-                                                <h5 class="modal-title">Edit Payment Method</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                            </div>
-                                            <div class="modal-body row g-3">
-                                                <div class="col-md-6">
-                                                    <label class="form-label">Icon</label>
-                                                    <input type="file" name="icon" class="form-control" value="{{ $method->icon }}">
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label class="form-label">Method</label>
-                                                    <input type="text" name="method" class="form-control" value="{{ $method->method }}">
-                                                </div>
-                                                <div class="col-md-12">
-                                                    <label class="form-label">Description</label>
-                                                    <!-- TinyMCE textarea with class -->
-                                                    <textarea name="description" class="form-control tinymce-editor">{{ $method->description }}</textarea>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label class="form-label">Number</label>
-                                                    <input type="text" name="number" class="form-control" value="{{ $method->number }}">
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label class="form-label">Status</label>
-                                                    <select name="status" class="form-select">
-                                                        <option value="1" {{ $method->status == 1 ? 'selected' : '' }}>Active</option>
-                                                        <option value="0" {{ $method->status == 0 ? 'selected' : '' }}>Inactive</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                <button type="submit" class="btn btn-warning">Update</button>
-                                            </div>
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </button>
                                         </form>
                                     </div>
-                                </div>
-                            </div>
+                                </td>
+
+                            </tr>
+
 
                             <!-- Delete Modal -->
                             <div class="modal fade" id="deleteMethodModal{{ $method->id }}" tabindex="-1" aria-hidden="true">
@@ -235,5 +169,19 @@
         </div>
     </div>
 
+    <!-- TinyMCE CDN Script & Init -->
+    <script src="https://cdn.tiny.cloud/1/rx33nh9mrg7zvtjoq6t8vd2ddu0l67uiw9stt1scrdjlb1dh/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            tinymce.init({
+                selector: '.tinymce-editor',
+                plugins: 'advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount',
+                toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+                menubar: true,
+                height: 200,
+                content_style: "body { font-family:Arial,sans-serif; font-size:14px }"
+            });
+        });
+    </script>
 
 @endsection
