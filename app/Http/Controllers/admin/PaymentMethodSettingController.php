@@ -19,7 +19,7 @@ class PaymentMethodSettingController extends Controller
     public function edit($id)
     {
         $method = PaymentMethod::findOrFail($id);
-        return view('admin.payment-methods.edit', compact('method'));
+        return view('admin.payment.edit', compact('method'));
     }
 
 
