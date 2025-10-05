@@ -27,6 +27,10 @@ class Product extends Model
         'total_input',
         'support_country',
         'delivery_system',
+        'seo_title',
+        'seo_description',
+        'seo_keywords',
+        'status',
     ];
 
     public function reviews()
