@@ -102,6 +102,7 @@ class ProductController extends Controller
             'cover_image'       => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'sort'              => 'nullable|integer',
             'stock'             => 'required|boolean',
+            'seo_title'         => 'required|string',
         ]);
 
         // Handle image update
