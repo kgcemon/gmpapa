@@ -29,16 +29,15 @@ class SitemapController extends Controller
         foreach ($products as $product) {
             $urls[] = [
                 'loc' => url('/product/' . $product->slug),
-                'lastmod' => $product->updated_at->toAtomString(),
+                'lastmod' => optional($product->updated_at)->toAtomString() ?? now()->toAtomString(),
                 'changefreq' => 'weekly',
                 'priority' => '1.0'
             ];
         }
 
-
-        $content = view('sitemap', compact('urls'));
-
-        return response($content, 200)
-            ->header('Content-Type', 'application/xml');
-    }
+        return response()->json([
+           'status' => true,
+           'urls' => $urls,
+        ]);
+}
 }
