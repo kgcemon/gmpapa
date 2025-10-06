@@ -11,6 +11,13 @@ class SitemapController extends Controller
     {
         $urls = [];
 
+        $urls[] = [
+            'loc' => '/',
+            'lastmod' => Carbon::now()->toAtomString(),
+            'changefreq' => 'daily',
+            'priority' => '1.0'
+        ];
+
         $products = Product::where('name', '!=', 'Wallet')->get();
         foreach ($products as $product) {
             $urls[] = [
