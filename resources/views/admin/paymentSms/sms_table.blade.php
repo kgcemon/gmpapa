@@ -31,20 +31,24 @@
                     <td>{{ $sms->created_at ? $sms->created_at->format('d M Y, h:i A') : 'N/A' }}</td>
                     <td>
                         <div class="d-flex justify-content-center gap-2 flex-wrap">
-                            <button class="btn btn-sm btn-primary edit-btn"
-                                    data-id="{{ $sms->id }}"
-                                    data-status="{{ $sms->status }}"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#editStatusModal">
-                                Edit
+                            <!-- Complete Button -->
+                            <button class="btn btn-sm btn-success complete-btn"
+                                    title="Mark as Completed"
+                                    data-id="{{ $sms->id }}">
+                                <i class="fas fa-user-check"></i>
                             </button>
+
+                            <!-- Delete Button -->
                             <form action="{{ route('admin.sms.delete', $sms->id) }}" method="POST" class="d-inline-block">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
                             </form>
                         </div>
                     </td>
+
                 </tr>
             @empty
                 <tr>
