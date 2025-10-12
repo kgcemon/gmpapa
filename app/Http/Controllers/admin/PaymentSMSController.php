@@ -38,6 +38,21 @@ class PaymentSMSController extends Controller
         return view('admin.paymentSms.sms', compact('data'));
     }
 
+    public function markComplete($id)
+    {
+        $sms = PaymentSms::find($id);
+
+        if (!$sms) {
+            return redirect()->back()->with('error', 'SMS not found.');
+        }
+
+        $sms->status = 1; // Completed
+        $sms->save();
+
+        return redirect()->back()->with('success', 'Status updated successfully.');
+    }
+
+
 
     // Add new SMS
     public function addSms(Request $request)

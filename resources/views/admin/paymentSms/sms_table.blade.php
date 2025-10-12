@@ -31,12 +31,14 @@
                     <td>{{ $sms->created_at ? $sms->created_at->format('d M Y, h:i A') : 'N/A' }}</td>
                     <td>
                         <div class="d-flex justify-content-center gap-2 flex-wrap">
-                            <!-- Complete Button -->
-                            <button class="btn btn-sm btn-success complete-btn"
-                                    title="Mark as Completed"
-                                    data-id="{{ $sms->id }}">
-                                <i class="fas fa-user-check"></i>
-                            </button>
+
+                            <form action="{{ route('admin.sms.complete', $sms->id) }}" method="POST" class="d-inline-block">
+                                @csrf
+                                @method('PUT')
+                                <button type="submit" class="btn btn-sm btn-success" title="Mark as Completed">
+                                    <i class="fas fa-user-check"></i>
+                                </button>
+                            </form>
 
                             <!-- Delete Button -->
                             <form action="{{ route('admin.sms.delete', $sms->id) }}" method="POST" class="d-inline-block">
@@ -46,6 +48,7 @@
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
                             </form>
+
                         </div>
                     </td>
 
