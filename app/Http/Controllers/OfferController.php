@@ -33,7 +33,7 @@ class OfferController extends Controller
                         $request->discount,
                         '57527',
                         $request->expiryDate,
-                        url('/')
+                        'https://freefirebd.com'
                     ));
                     $success++;
                 } catch (\Exception $e) {
