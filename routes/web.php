@@ -73,7 +73,7 @@ Route::middleware('auth')->prefix('admin')->as('admin.')->group(function () {
     Route::post('/sms/add', [PaymentSmsController::class, 'addSms'])->name('sms.add');
     Route::put('/sms/update-status', [PaymentSmsController::class, 'updateStatus'])->name('sms.update-status');
     Route::delete('/sms/{id}', [PaymentSmsController::class, 'delete'])->name('sms.delete');
-    Route::put('/complete/{id}', [PaymentSmsController::class, 'markComplete'])->name('admin.sms.complete');
+    Route::put('/complete/{id}', [PaymentSmsController::class, 'markComplete'])->name('sms.complete');
 
 
     //Social
