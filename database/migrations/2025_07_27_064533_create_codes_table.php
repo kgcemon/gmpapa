@@ -22,6 +22,7 @@ return new class extends Migration
             $table->boolean('active')->default(true);
             $table->string('uid',70)->unique()->nullable();
             $table->string('note',70)->nullable();
+            $table->integer('sort')->default(0);
             $table->timestamps();
         });
     }

@@ -17,7 +17,8 @@ class Code extends Model
         'active',
         'denom',
         'uid',
-        'note'
+        'note',
+        'sort'
     ];
 
 

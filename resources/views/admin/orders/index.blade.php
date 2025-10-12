@@ -70,10 +70,12 @@
                                     <td>
                                         @php
                                             $statusClass = match($order->status) {
-                                                'hold' => 'badge bg-warning',
-                                                'completed' => 'badge bg-success',
-                                                'cancelled' => 'badge bg-danger',
-                                                default => 'badge bg-secondary',
+                                                'delivered' => 'badge bg-primary',     // Blue
+                                                'processing' => 'badge bg-success',    // Green
+                                                'hold' => 'badge bg-warning',          // Yellow
+                                                'cancelled' => 'badge bg-secondary',   // Gray
+                                                'Delivery Running' => 'badge bg-orange', // Orange (custom)
+                                                default => 'badge bg-light text-dark',
                                             };
                                         @endphp
                                         <span class="{{ $statusClass }}">{{ ucfirst($order->status) }}</span>
