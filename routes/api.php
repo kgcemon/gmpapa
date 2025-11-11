@@ -10,6 +10,7 @@ use App\Http\Controllers\api\OrdersController;
 use App\Http\Controllers\api\PaymentMethodController;
 use App\Http\Controllers\api\ProductsController;
 use App\Http\Controllers\api\ReviewController;
+use App\Http\Controllers\EPSController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\WebHooksController;
 use Illuminate\Http\Request;
@@ -67,3 +68,13 @@ Route::post('auto-webhooks',[WebHooksController::class,'OrderUpdate']);
 Route::post('store-sms',[PaymentSMSController::class, 'SmsWhooks']);
 Route::get('/review/{slug}', [ReviewController::class, 'reviewByProduct'])->name('review');
 Route::get('sitemap',[SitemapController::class,'index']);
+
+
+//paymentGetway
+Route::get('/eps/get-token', [EPSController::class, 'getToken']);
+Route::get('/eps/pay', [EPSController::class, 'initializePayment']);
+Route::get('/eps/verify/{id}', [EPSController::class, 'verifyTransaction']);
+
+Route::get('/eps/success', [EPSController::class, 'success'])->name('eps.success');
+Route::get('/eps/fail', [EPSController::class, 'fail'])->name('eps.fail');
+Route::get('/eps/cancel', [EPSController::class, 'cancel'])->name('eps.cancel');
