@@ -50,7 +50,7 @@ class EPSController extends Controller
             "CustomerOrderId" => uniqid('order_'),
             "merchantTransactionId" => $merchantTransactionId,
             "transactionTypeId" => 1, // 1=Web
-            "totalAmount" => 1.00,
+            "totalAmount" => 5.00,
             "successUrl" => route('eps.success'),
             "failUrl" => route('eps.fail'),
             "cancelUrl" => route('eps.cancel'),
