@@ -139,7 +139,7 @@ class OrdersController extends Controller
                         $order->status  = 'Pending Payment';
                         $order->transaction_id = $validated['transaction_id'];
                         $eps = json_decode($eps, true);
-                        return  $eps->TransactionId;
+                        return  $eps['TransactionId'];
 
                     } else {
                         if (empty($validated['transaction_id']) || empty($validated['number'])) {
