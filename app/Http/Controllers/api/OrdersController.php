@@ -154,6 +154,7 @@ class OrdersController extends Controller
             if ($validated['transaction_id'] == null &&
                     $validated['number'] == null &&
                     $paymentMethod->method === 'eps') {
+                    $merchantTransactionId = uniqid('txn_');
                     $eps = $this->epsHelper->initializePayment(
                         "$item->name",
                         "$total",
@@ -161,11 +162,12 @@ class OrdersController extends Controller
                         $user !== null ? $user->email : 'guest@email.com',
                         $request['phone'] ?? "018888888888",
                         $order->id,
+                        $merchantTransactionId
                     );
                     $order->status  = 'Pending Payment';
 
                     if ($eps['TransactionId'] !== null) {
-                        $order->transaction_id = $eps['TransactionId'];
+                        $order->transaction_id = $merchantTransactionId;
                         $paymentUrl = $eps['RedirectURL'];
                     }
 

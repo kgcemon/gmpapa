@@ -45,6 +45,7 @@ class EpsHelper
         $email,
         $phone,
         $orderId,
+        $merchantTransactionId
     )
     {
         $tokenData = $this->getToken();
@@ -55,7 +56,6 @@ class EpsHelper
             return response()->json(['error' => 'Token not found'], 500);
         }
 
-        $merchantTransactionId = uniqid('txn_');
         $xHash = EpsHelper::generateHash($this->hashKey, $merchantTransactionId);
 
         $body = [
