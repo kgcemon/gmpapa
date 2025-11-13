@@ -130,7 +130,7 @@ class OrdersController extends Controller
                         $paySMS->save();
                         $order->status         = 'processing';
                     }else if ($validated['transaction_id'] == null && $paymentMethod->method === 'eps') {
-
+                        $order->status  = 'Pending Payment';
                     } else {
                         if (empty($validated['transaction_id']) || empty($validated['number'])) {
                             return response()->json([
