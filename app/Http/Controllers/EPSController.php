@@ -41,7 +41,7 @@ class EPSController extends Controller
             return response()->json(['error' => 'Token not found'], 500);
         }
 
-        $merchantTransactionId = uniqid('txn_');
+        $merchantTransactionId = 10;
         $xHash = EpsHelper::generateHash($this->hashKey, $merchantTransactionId);
 
         $body = [

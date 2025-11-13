@@ -23,7 +23,7 @@ return new class extends Migration
             $table->float('total');
             $table->string('customer_data');
             $table->string('others_data')->nullable();
-            $table->enum('status',['hold','processing','Delivery Running','delivered','cancelled','refunded'])->default('hold');
+            $table->enum('status',['hold','processing','Delivery Running','delivered','cancelled','refunded','Pending Payment'])->default('hold');
             $table->string('order_note')->nullable();
             $table->unsignedInteger('payment_method');
             $table->string('transaction_id')->unique()->nullable();
