@@ -135,12 +135,12 @@ class OrdersController extends Controller
                         $paySMS->save();
                         $order->status         = 'processing';
                     }else {
-                        if (empty($validated['transaction_id']) || empty($validated['number'])) {
-                            return response()->json([
-                                'status'  => false,
-                                'message' => 'Transaction ID and payment number are required for this payment method.',
-                            ], 422);
-                        }
+//                        if (empty($validated['transaction_id']) || empty($validated['number'])) {
+//                            return response()->json([
+//                                'status'  => false,
+//                                'message' => 'Transaction ID and payment number are required for this payment method.',
+//                            ], 422);
+//                        }
 
                         $order->transaction_id = $validated['transaction_id'];
                         $order->number         = $validated['number'];
