@@ -138,6 +138,7 @@ class OrdersController extends Controller
                         $eps = $this->epsHelper->initializePayment();
                         $order->status  = 'Pending Payment';
                         $order->transaction_id = $validated['transaction_id'];
+                        $eps = json_decode($eps, true);
                         return  $eps->TransactionId;
 
                     } else {
