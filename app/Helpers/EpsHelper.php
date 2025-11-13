@@ -61,7 +61,7 @@ class EpsHelper
         $body = [
             "merchantId" => $this->merchantId,
             "storeId" => $this->storeId,
-            "CustomerOrderId" => $orderId,
+            "CustomerOrderId" => "order_$orderId",
             "merchantTransactionId" => $merchantTransactionId,
             "transactionTypeId" => 1,
             "totalAmount" => $amount,
