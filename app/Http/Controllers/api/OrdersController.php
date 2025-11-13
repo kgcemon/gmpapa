@@ -14,6 +14,7 @@ use App\Models\WalletTransaction;
 use App\Services\WalletService;
 use Illuminate\Support\Facades\DB;
 use function Pest\Laravel\json;
+use function PHPUnit\Framework\isEmpty;
 
 class OrdersController extends Controller
 {
@@ -138,8 +139,10 @@ class OrdersController extends Controller
                         $paymentMethod->method === 'eps') {
                         $eps = $this->epsHelper->initializePayment();
                         $order->status  = 'Pending Payment';
-                        $order->transaction_id = $validated['transaction_id'];
-                        return  $eps['TransactionId'];
+
+                        if (!isEmpty($eps['TransactionId'])){
+                            $order->transaction_id = $eps['TransactionId'];
+                        }
 
                     } else {
                         if (empty($validated['transaction_id']) || empty($validated['number'])) {
