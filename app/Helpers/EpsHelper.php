@@ -38,7 +38,13 @@ class EpsHelper
     }
 
     // Step 2: Initialize Payment
-    public function initializePayment()
+    public function initializePayment(
+        $product,
+        $amount,
+        $name,
+        $email,
+        $phone,
+    )
     {
         $tokenData = $this->getToken();
 
@@ -56,20 +62,20 @@ class EpsHelper
             "storeId" => $this->storeId,
             "CustomerOrderId" => uniqid('order_'),
             "merchantTransactionId" => $merchantTransactionId,
-            "transactionTypeId" => 1, // 1=Web
-            "totalAmount" => 5.00,
+            "transactionTypeId" => 1,
+            "totalAmount" => $amount,
             "successUrl" => route('eps.success'),
             "failUrl" => route('eps.fail'),
             "cancelUrl" => route('eps.cancel'),
-            "customerName" => "Test User",
-            "customerEmail" => "test@example.com",
+            "customerName" => $name,
+            "customerEmail" => $email ?? 'test@gmail.com',
             "customerAddress" => "Dhaka",
             "customerCity" => "Dhaka",
             "customerState" => "Dhaka",
             "customerPostcode" => "1200",
             "customerCountry" => "BD",
-            "customerPhone" => "01700000000",
-            "productName" => "Demo Product",
+            "customerPhone" => $phone,
+            "productName" => $product,
         ];
 
         $response = Http::withHeaders([

@@ -137,7 +137,13 @@ class OrdersController extends Controller
                     }else if ($validated['transaction_id'] == null &&
                         $validated['number'] == null &&
                         $paymentMethod->method === 'eps') {
-                        $eps = $this->epsHelper->initializePayment();
+                        $eps = $this->epsHelper->initializePayment(
+                            "$item->name",
+                            "$total",
+                            $user !== null ? $user->name : 'guest',
+                            $user !== null ? $user->email : 'guest@email.com',
+                            $request['phone'] ?? "018888888888",
+                        );
                         $order->status  = 'Pending Payment';
 
                         if ($eps['TransactionId'] !== null) {
