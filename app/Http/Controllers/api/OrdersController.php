@@ -42,6 +42,7 @@ class OrdersController extends Controller
         $product       = Product::find($validated['product_id']);
         $item          = Item::find($validated['items_id']);
         $paymentMethod = PaymentMethod::find($validated['method_id']);
+        $paymentUrl = null;
 
 
         if (!$product || !$item || !$paymentMethod) {
@@ -129,9 +130,9 @@ class OrdersController extends Controller
                         $paySMS->save();
                         $order->status         = 'processing';
                     }else if ($validated['transaction_id'] == null && $paymentMethod->method === 'eps') {
-
-
-
+                        return response()->json([
+                            'status'  => false,
+                        ]);
                     } else {
                         if (empty($validated['transaction_id']) || empty($validated['number'])) {
                             return response()->json([
