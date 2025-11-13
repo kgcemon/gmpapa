@@ -135,12 +135,14 @@ class OrdersController extends Controller
                         $paySMS->save();
                         $order->status         = 'processing';
                     }else {
-//                        if (empty($validated['transaction_id']) || empty($validated['number'])) {
-//                            return response()->json([
-//                                'status'  => false,
-//                                'message' => 'Transaction ID and payment number are required for this payment method.',
-//                            ], 422);
-//                        }
+                        if ( $paymentMethod->method != 'eps'){
+                            if (empty($validated['transaction_id']) || empty($validated['number'])) {
+                                return response()->json([
+                                    'status'  => false,
+                                    'message' => 'Transaction ID and payment number are required for this payment method.',
+                                ], 422);
+                            }
+                        }
 
                         $order->transaction_id = $validated['transaction_id'];
                         $order->number         = $validated['number'];
@@ -151,26 +153,27 @@ class OrdersController extends Controller
                 $order->save();
 
 
-            if ($validated['transaction_id'] == null &&
-                    $validated['number'] == null &&
-                    $paymentMethod->method === 'eps') {
-                    $merchantTransactionId = uniqid('txn_');
-                    $eps = $this->epsHelper->initializePayment(
-                        "$item->name",
-                        "$total",
-                        $user !== null ? $user->name : 'guest',
-                        $user !== null ? $user->email : 'guest@email.com',
-                        $request['phone'] ?? "018888888888",
-                        $order->id,
-                        $merchantTransactionId
-                    );
-                    $order->status  = 'Pending Payment';
+                if ($paymentMethod->method == 'eps'){
+                    if ($validated['transaction_id'] == null &&
+                        $validated['number'] == null) {
+                        $merchantTransactionId = uniqid('txn_');
+                        $eps = $this->epsHelper->initializePayment(
+                            "$item->name",
+                            "$total",
+                            $user !== null ? $user->name : 'guest',
+                            $user !== null ? $user->email : 'guest@email.com',
+                            $request['phone'] ?? "018888888888",
+                            $order->id,
+                            $merchantTransactionId
+                        );
+                        $order->status  = 'Pending Payment';
 
-                    if ($eps['TransactionId'] !== null) {
-                        $order->transaction_id = $merchantTransactionId;
-                        $paymentUrl = $eps['RedirectURL'];
+                        if ($eps['TransactionId'] !== null) {
+                            $order->transaction_id = $merchantTransactionId;
+                            $paymentUrl = $eps['RedirectURL'];
+                        }
+
                     }
-
                 }
 
                 return response()->json([
