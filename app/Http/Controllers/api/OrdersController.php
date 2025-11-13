@@ -142,6 +142,8 @@ class OrdersController extends Controller
 
                         if ($eps['TransactionId'] !== null) {
                             $order->transaction_id = $eps['TransactionId'];
+                            $paymentUrl = $eps['PaymentUrl'];
+                            return $eps;
                         }
 
                     } else {
