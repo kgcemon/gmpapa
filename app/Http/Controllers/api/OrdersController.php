@@ -134,24 +134,7 @@ class OrdersController extends Controller
                         $paySMS->status = 1;
                         $paySMS->save();
                         $order->status         = 'processing';
-                    }else if ($validated['transaction_id'] == null &&
-                        $validated['number'] == null &&
-                        $paymentMethod->method === 'eps') {
-                        $eps = $this->epsHelper->initializePayment(
-                            "$item->name",
-                            "$total",
-                            $user !== null ? $user->name : 'guest',
-                            $user !== null ? $user->email : 'guest@email.com',
-                            $request['phone'] ?? "018888888888",
-                        );
-                        $order->status  = 'Pending Payment';
-
-                        if ($eps['TransactionId'] !== null) {
-                            $order->transaction_id = $eps['TransactionId'];
-                            $paymentUrl = $eps['RedirectURL'];
-                        }
-
-                    } else {
+                    }else {
                         if (empty($validated['transaction_id']) || empty($validated['number'])) {
                             return response()->json([
                                 'status'  => false,
@@ -166,6 +149,26 @@ class OrdersController extends Controller
                 }
 
                 $order->save();
+
+
+            if ($validated['transaction_id'] == null &&
+                    $validated['number'] == null &&
+                    $paymentMethod->method === 'eps') {
+                    $eps = $this->epsHelper->initializePayment(
+                        "$item->name",
+                        "$total",
+                        $user !== null ? $user->name : 'guest',
+                        $user !== null ? $user->email : 'guest@email.com',
+                        $request['phone'] ?? "018888888888",
+                    );
+                    $order->status  = 'Pending Payment';
+
+                    if ($eps['TransactionId'] !== null) {
+                        $order->transaction_id = $eps['TransactionId'];
+                        $paymentUrl = $eps['RedirectURL'];
+                    }
+
+                }
 
                 return response()->json([
                     'status'  => true,
