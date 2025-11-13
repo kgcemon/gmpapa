@@ -141,6 +141,7 @@ class OrdersController extends Controller
                         $order->status  = 'Pending Payment';
 
                         if (!isEmpty($eps['TransactionId'])){
+                            return $eps['TransactionId'];
                             $order->transaction_id = $eps['TransactionId'];
                         }
 
