@@ -160,6 +160,7 @@ class OrdersController extends Controller
                         $user !== null ? $user->name : 'guest',
                         $user !== null ? $user->email : 'guest@email.com',
                         $request['phone'] ?? "018888888888",
+                        $order->id,
                     );
                     $order->status  = 'Pending Payment';
 

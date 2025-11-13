@@ -44,6 +44,7 @@ class EpsHelper
         $name,
         $email,
         $phone,
+        $orderId,
     )
     {
         $tokenData = $this->getToken();
@@ -60,7 +61,7 @@ class EpsHelper
         $body = [
             "merchantId" => $this->merchantId,
             "storeId" => $this->storeId,
-            "CustomerOrderId" => uniqid('order_'),
+            "CustomerOrderId" => $orderId,
             "merchantTransactionId" => $merchantTransactionId,
             "transactionTypeId" => 1,
             "totalAmount" => $amount,
