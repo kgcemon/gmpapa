@@ -142,8 +142,7 @@ class OrdersController extends Controller
 
                         if ($eps['TransactionId'] !== null) {
                             $order->transaction_id = $eps['TransactionId'];
-                            //$paymentUrl = $eps['PaymentUrl'];
-                            return $eps;
+                            $paymentUrl = $eps['RedirectURL'];
                         }
 
                     } else {
@@ -164,6 +163,7 @@ class OrdersController extends Controller
 
                 return response()->json([
                     'status'  => true,
+                    'paymentUrl' => $paymentUrl ?? null,
                     'message' => 'Order created successfully',
                     'order'   => $order
                 ], 201);
