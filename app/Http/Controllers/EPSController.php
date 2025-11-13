@@ -47,7 +47,7 @@ class EPSController extends Controller
         $body = [
             "merchantId" => $this->merchantId,
             "storeId" => $this->storeId,
-            "CustomerOrderId" => uniqid('order_'),
+            "CustomerOrderId" => 10,
             "merchantTransactionId" => $merchantTransactionId,
             "transactionTypeId" => 1, // 1=Web
             "totalAmount" => 5.00,
