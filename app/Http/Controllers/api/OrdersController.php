@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Helpers\EpsHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrderRequest;
 use App\Models\Item;
@@ -16,10 +17,12 @@ use Illuminate\Support\Facades\DB;
 class OrdersController extends Controller
 {
     protected $walletService;
+    protected $epsHelper;
 
-    public function __construct(WalletService $walletService)
+    public function __construct(WalletService $walletService, EpsHelper $epsHelper)
     {
         $this->walletService = $walletService;
+        $this->epsHelper = $epsHelper;
     }
 
     public function store(StoreOrderRequest $request)
@@ -129,8 +132,14 @@ class OrdersController extends Controller
                         $paySMS->status = 1;
                         $paySMS->save();
                         $order->status         = 'processing';
-                    }else if ($validated['transaction_id'] == null && $paymentMethod->method === 'eps') {
+                    }else if ($validated['transaction_id'] == null &&
+                        $validated['number'] == null &&
+                        $paymentMethod->method === 'eps') {
+                        $eps = $this->epsHelper->initializePayment();
                         $order->status  = 'Pending Payment';
+                        $order->transaction_id = $validated['transaction_id'];
+                        return  $eps;
+
                     } else {
                         if (empty($validated['transaction_id']) || empty($validated['number'])) {
                             return response()->json([
