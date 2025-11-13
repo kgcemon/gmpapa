@@ -138,7 +138,7 @@ class OrdersController extends Controller
                         $eps = $this->epsHelper->initializePayment();
                         $order->status  = 'Pending Payment';
                         $order->transaction_id = $validated['transaction_id'];
-                        return  $eps;
+                        return  $eps->TransactionId;
 
                     } else {
                         if (empty($validated['transaction_id']) || empty($validated['number'])) {
