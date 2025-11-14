@@ -44,7 +44,7 @@ class WebHooksController extends Controller
             }
             if ($api){
                 $api->running = 0;
-                $api->order_id = null;
+                $api->order_id = '';
                 $api->save();
             }
         }
