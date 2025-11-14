@@ -91,6 +91,8 @@ class CronJobController extends Controller
                          DB::rollBack();
                          continue;
                      }
+                     $apiData->running = 1;
+                     $apiData->save();
                             $code = Code::where('denom', $d)->where('status', 'unused')
                                 ->lockForUpdate()
                                 ->first();
