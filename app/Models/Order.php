@@ -35,7 +35,7 @@ class Order extends Model
 
     public function runningApi()
     {
-        return $this->hasOne(Api::class, 'order_id', 'uid');
+        return $this->hasOne(Api::class, 'order_id', 'order_note');
     }
 
     public function usedCodes()
