@@ -14,5 +14,7 @@ class Api extends Model
         'url',
         'key',
         'status',
+        'running',
+        'order_id',
     ];
 }
