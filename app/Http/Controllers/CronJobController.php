@@ -28,6 +28,11 @@ class CronJobController extends Controller
 
             $orders = Order::where('status', 'processing')->whereNull('order_note')->limit(4)->get();
             $uid = null;
+            $api = Api::where('running', 1)
+                ->where('updated_at', '<', now()->subMinutes(3))
+                ->first();
+
+            if ($api) $api->update(['running' => 0]);
 
             try {
                 foreach ($orders as $order) {

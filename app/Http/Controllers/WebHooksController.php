@@ -35,6 +35,7 @@ class WebHooksController extends Controller
 
         if ($order){
             $api = Api::where('order_id', $uid)->first();
+
             if ($api){
                 $api->running = 0;
                 $api->order_id = null;
