@@ -97,7 +97,10 @@ class CronJobController extends Controller
                          ->first();
 
                      if ($runningApi) {
-                         $runningApi->update(['running' => 0]);
+                         $runningApi->update([
+                             'running' => 0,
+                             'order_id' => null
+                         ]);
                      }
                      $apiData->running = 1;
                      $apiData->save();
