@@ -79,7 +79,7 @@
                                             };
                                         @endphp
                                         <span class="{{ $statusClass }}">{{ ucfirst($order->status) }}</span><br>
-                                        {{$order->runningApi->name ?? 'Job Done'}}
+                                        {{$order->runningApi != null ? $order->runningApi->name : 'done'}}
                                     </td>
                                     <td>{{ $order->transaction_id ?? '-' }}</td>
                                     <td style="font-size: 10px">{{ $order->created_at ? $order->created_at->diffForHumans() : 'N/A' }}</td>
