@@ -91,6 +91,14 @@ class CronJobController extends Controller
                          DB::rollBack();
                          continue;
                      }
+
+                     $runningApi = $apiData->where('running', 1)
+                         ->where('updated_at', '<', now()->subMinutes(5))
+                         ->first();
+
+                     if ($runningApi) {
+                         $runningApi->update(['running' => 0]);
+                     }
                      $apiData->running = 1;
                      $apiData->save();
                             $code = Code::where('denom', $d)->where('status', 'unused')
@@ -126,7 +134,7 @@ class CronJobController extends Controller
                             $code->status = 'used';
                             $code->uid = $uid ?? null;
                             $code->order_id = $order->id;
-                            $apiData->order_id = $order->id;
+                            $apiData->order_id = $uid ?? null;
                             $apiData->running = 1;
                             $apiData->save();
                             if (empty($uid)){

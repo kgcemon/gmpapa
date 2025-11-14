@@ -34,14 +34,7 @@ class WebHooksController extends Controller
         $user = $order ? User::find($order->user_id) : null;
 
         if ($order){
-            $api = Api::where('order_id', $order->id)->first();
-            $runningApi = $api->where('running', 1)
-                ->where('updated_at', '<', now()->subMinutes(5))
-                ->first();
-
-            if ($runningApi) {
-                $runningApi->update(['running' => 0]);
-            }
+            $api = Api::where('order_id', $uid)->first();
             if ($api){
                 $api->running = 0;
                 $api->order_id = '';
