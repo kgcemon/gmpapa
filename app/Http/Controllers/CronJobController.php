@@ -132,12 +132,12 @@ class CronJobController extends Controller
                             $code->save();
                         }
 
+                    $apiData->order_id = $uid ?? null;
+                    $apiData->running = 1;
+                    $apiData->save();
 
                     DB::commit();
                 }
-                $apiData->order_id = $uid;
-                $apiData->running = 1;
-                $apiData->save();
 
                 return 'Cron job run successfully';
             } catch (\Exception $exception) {
