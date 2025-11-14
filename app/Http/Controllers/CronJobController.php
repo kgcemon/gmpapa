@@ -85,7 +85,8 @@ class CronJobController extends Controller
                         continue;
                     }
 
-                    $apiData = Api::where('type', 'auto')->where('status', 1)->where('running', 1)->first();
+                    $apiData = Api::where('type', 'auto')->where('status', 1)->where('running', 0)->first();
+
                     if (!$apiData) {
                         DB::rollBack();
                         continue;
