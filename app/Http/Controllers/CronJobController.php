@@ -84,26 +84,14 @@ class CronJobController extends Controller
                         continue;
                     }
 
+                    $apiData = Api::where('type', 'auto')->where('status', 1)->where('running', 1)->first();
+                    if (!$apiData) {
+                        DB::rollBack();
+                        continue;
+                    }
 
                  foreach ($allDenoms as $d) {
-                     $apiData = Api::where('type', 'auto')->where('status', 1)->where('running', 0)->first();
-                     if (!$apiData) {
-                         DB::rollBack();
-                         continue;
-                     }
 
-                     $runningApi = Api::where('running', 1)
-                         ->where('updated_at', '<', now()->subMinutes(5))
-                         ->first();
-
-                     if ($runningApi) {
-                         $runningApi->update([
-                             'running' => 0,
-                             'order_id' => null
-                         ]);
-                     }
-                     $apiData->running = 1;
-                     $apiData->save();
                             $code = Code::where('denom', $d)->where('status', 'unused')
                                 ->lockForUpdate()
                                 ->first();
@@ -137,9 +125,6 @@ class CronJobController extends Controller
                             $code->status = 'used';
                             $code->uid = $uid ?? null;
                             $code->order_id = $order->id;
-                            $apiData->order_id = $uid ?? null;
-                            $apiData->running = 1;
-                            $apiData->save();
                             if (empty($uid)){
                                 $code->active = false;
                             }
@@ -149,6 +134,9 @@ class CronJobController extends Controller
 
                     DB::commit();
                 }
+                $apiData->order_id = $uid;
+                $apiData->running = 1;
+                $apiData->save();
 
                 return 'Cron job run successfully';
             } catch (\Exception $exception) {
