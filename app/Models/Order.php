@@ -33,6 +33,11 @@ class Order extends Model
         });
     }
 
+    public function runningApi()
+    {
+        return $this->hasOne(Api::class, 'id', 'order_id');
+    }
+
     public function usedCodes()
     {
         return $this->hasMany(Code::class, 'order_id', 'id');

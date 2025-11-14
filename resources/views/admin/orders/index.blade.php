@@ -75,10 +75,11 @@
                                                 'hold' => 'badge bg-warning',          // Yellow
                                                 'cancelled' => 'badge bg-secondary',   // Gray
                                                 'Delivery Running' => 'badge bg-orange', // Orange (custom)
-                                                default => 'badge bg-light text-dark',
+                                                default => 'badge bg-warning text-dark',
                                             };
                                         @endphp
-                                        <span class="{{ $statusClass }}">{{ ucfirst($order->status) }}</span>
+                                        <span class="{{ $statusClass }}">{{ ucfirst($order->status) }}</span><br>
+                                        {{$order->runningApi->name}}
                                     </td>
                                     <td>{{ $order->transaction_id ?? '-' }}</td>
                                     <td style="font-size: 10px">{{ $order->created_at ? $order->created_at->diffForHumans() : 'N/A' }}</td>
