@@ -27,6 +27,7 @@ class CronJobController extends Controller
         try {
 
             $orders = Order::where('status', 'processing')->whereNull('order_note')->limit(4)->get();
+            $uid = null;
 
             try {
                 foreach ($orders as $order) {
