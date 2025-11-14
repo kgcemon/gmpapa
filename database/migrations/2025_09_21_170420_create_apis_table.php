@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('url');
             $table->string('key');
+            $table->string('order_id');
+            $table->boolean('running')->default(0);
             $table->boolean('status')->default(true);
             $table->timestamps();
         });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\OrderDeliveredMail;
 use App\Mail\OrderRefundMail;
+use App\Models\Api;
 use App\Models\Code;
 use App\Models\Order;
 use App\Models\User;
@@ -31,6 +32,22 @@ class WebHooksController extends Controller
 
         $order = Order::where('order_note', $uid)->first();
         $user = $order ? User::find($order->user_id) : null;
+
+        if ($order){
+            $api = Api::where('order_id', $order->id)->first();
+            $runningApi = $api->where('running', 1)
+                ->where('updated_at', '<', now()->subMinutes(10))
+                ->first();
+
+            if ($runningApi) {
+                $runningApi->update(['running' => 0]);
+            }
+            if ($api){
+                $api->running = 0;
+                $api->order_id = null;
+                $api->save();
+            }
+        }
 
         if ($order) {
             if ($status == 'true') {

@@ -84,7 +84,7 @@ class CronJobController extends Controller
                         continue;
                     }
 
-                    $apiData = Api::where('type', 'auto')->where('status', 1)->first();
+                    $apiData = Api::where('type', 'auto')->where('status', 1)->where('running', 0)->first();
                     if (!$apiData) {
                         DB::rollBack();
                         continue;
@@ -125,6 +125,9 @@ class CronJobController extends Controller
                             $code->status = 'used';
                             $code->uid = $uid ?? null;
                             $code->order_id = $order->id;
+                            $apiData->order_id = $order->id;
+                            $apiData->running = 1;
+                            $apiData->save();
                             if (empty($uid)){
                                 $code->active = false;
                             }
