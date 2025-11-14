@@ -87,11 +87,6 @@ class CronJobController extends Controller
 
                  foreach ($allDenoms as $d) {
                      $apiData = Api::where('type', 'auto')->where('status', 1)->where('running', 0)->first();
-                     if (!$apiData) {
-                         DB::rollBack();
-                         continue;
-                     }
-
                      $runningApi = $apiData->where('running', 1)
                          ->where('updated_at', '<', now()->subMinutes(5))
                          ->first();
@@ -102,6 +97,12 @@ class CronJobController extends Controller
                              'order_id' => null
                          ]);
                      }
+
+                     if (!$apiData) {
+                         DB::rollBack();
+                         continue;
+                     }
+
                      $apiData->running = 1;
                      $apiData->save();
                             $code = Code::where('denom', $d)->where('status', 'unused')
