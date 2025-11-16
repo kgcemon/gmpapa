@@ -101,7 +101,14 @@ class EPSController extends Controller
             $order = Order::where('status', 'Pending Payment')->where('transaction_id', $trXid)->first();
             if ($order != null) {
                 $data = $this->verifyTransaction($trXid);
-                return $data['Status'];
+                if ($data){
+                    $Status = $data['Status'];
+                    $amount = $data['TotalAmount'];
+                    if ($Status == 'Success' && $order->total == $amount) {
+                        $order->status = 'processing';
+                        $order->save();
+                    }
+                }
             }
         }
 
