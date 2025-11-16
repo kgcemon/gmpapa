@@ -91,9 +91,7 @@ class EPSController extends Controller
             'Authorization' => 'Bearer ' . $token,
         ])->get($url);
 
-        return $response->json([
-            'orderId' => $order->id,
-        ]);
+        return $response->json();
     }
 
     // Success/Fail/Cancel Redirects
