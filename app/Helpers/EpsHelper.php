@@ -76,8 +76,7 @@ class EpsHelper
             "customerPostcode" => "1200",
             "customerCountry" => "BD",
             "customerPhone" => $phone,
-            "productName" => $product,
-            "ValueA" => $orderId,
+            "productName" => $product
         ];
 
         $response = Http::withHeaders([
