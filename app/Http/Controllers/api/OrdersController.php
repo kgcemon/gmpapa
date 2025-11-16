@@ -135,7 +135,7 @@ class OrdersController extends Controller
                         $paySMS->save();
                         $order->status         = 'processing';
                     }else {
-                        if ( $paymentMethod->method != 'eps'){
+                        if ( $paymentMethod->id != 4){
                             if (empty($validated['transaction_id']) || empty($validated['number'])) {
                                 return response()->json([
                                     'status'  => false,
@@ -152,7 +152,7 @@ class OrdersController extends Controller
 
 
 
-                if ($paymentMethod->method == 'eps'){
+                if ($paymentMethod->id == 4 ){
                     if ($validated['transaction_id'] == null &&
                         $validated['number'] == null) {
                         $merchantTransactionId = uniqid('txn_');
@@ -160,9 +160,9 @@ class OrdersController extends Controller
                             $eps = $this->epsHelper->initializePayment(
                                 "$item->name",
                                 "$total",
-                                $user !== null ? $user->name : 'guest',
-                                $user !== null ? $user->email : 'guest@email.com',
-                                $request['phone'] ?? "018888888888",
+                                $user != null ? $user->name : 'guest',
+                                $user != null ? $user->email : 'guest@email.com',
+                                $user->phone ?? "018888888888",
                                 $order->id,
                                 $merchantTransactionId
                             );
