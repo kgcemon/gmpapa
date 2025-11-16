@@ -148,7 +148,7 @@ class OrdersController extends Controller
                     }
                 }
 
-
+                $order->save();
 
                 if ($paymentMethod->id == 4 ){
                     if ($validated['transaction_id'] == null &&
