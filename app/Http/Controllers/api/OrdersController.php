@@ -13,8 +13,6 @@ use App\Models\Product;
 use App\Models\WalletTransaction;
 use App\Services\WalletService;
 use Illuminate\Support\Facades\DB;
-use function Pest\Laravel\json;
-use function PHPUnit\Framework\isEmpty;
 
 class OrdersController extends Controller
 {
@@ -166,6 +164,7 @@ class OrdersController extends Controller
                                 $order->id,
                                 $merchantTransactionId
                             );
+                            dd($eps);
                             $order->status  = 'Pending Payment';
 
                             if ($eps['TransactionId'] !== null) {
