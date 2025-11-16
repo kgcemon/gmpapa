@@ -164,7 +164,6 @@ class OrdersController extends Controller
                                 $order->id,
                                 $merchantTransactionId
                             );
-                            dd($eps);
                             $order->status  = 'Pending Payment';
 
                             if ($eps['TransactionId'] !== null) {
