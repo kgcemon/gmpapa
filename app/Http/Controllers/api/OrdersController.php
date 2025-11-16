@@ -150,31 +150,33 @@ class OrdersController extends Controller
                     }
                 }
 
-                $order->save();
 
 
                 if ($paymentMethod->method == 'eps'){
                     if ($validated['transaction_id'] == null &&
                         $validated['number'] == null) {
                         $merchantTransactionId = uniqid('txn_');
-                        $eps = $this->epsHelper->initializePayment(
-                            "$item->name",
-                            "$total",
-                            $user !== null ? $user->name : 'guest',
-                            $user !== null ? $user->email : 'guest@email.com',
-                            $request['phone'] ?? "018888888888",
-                            $order->id,
-                            $merchantTransactionId
-                        );
-                        $order->status  = 'Pending Payment';
+                        try {
+                            $eps = $this->epsHelper->initializePayment(
+                                "$item->name",
+                                "$total",
+                                $user !== null ? $user->name : 'guest',
+                                $user !== null ? $user->email : 'guest@email.com',
+                                $request['phone'] ?? "018888888888",
+                                $order->id,
+                                $merchantTransactionId
+                            );
+                            $order->status  = 'Pending Payment';
 
-                        if ($eps['TransactionId'] !== null) {
-                            $order->transaction_id = $merchantTransactionId;
-                            $paymentUrl = $eps['RedirectURL'];
-                        }
-
+                            if ($eps['TransactionId'] !== null) {
+                                $order->transaction_id = $merchantTransactionId;
+                                $paymentUrl = $eps['RedirectURL'];
+                            }
+                        }catch (\Exception $exception){}
                     }
                 }
+
+                $order->save();
 
                 return response()->json([
                     'status'  => true,
