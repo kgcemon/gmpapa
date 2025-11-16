@@ -172,7 +172,9 @@ class OrdersController extends Controller
                                 $order->transaction_id = $merchantTransactionId;
                                 $paymentUrl = $eps['RedirectURL'];
                             }
-                        }catch (\Exception $exception){}
+                        }catch (\Exception $exception){
+                            return $exception->getMessage();
+                        }
                     }
                 }
 
