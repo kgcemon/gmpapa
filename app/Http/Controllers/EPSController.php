@@ -92,7 +92,12 @@ class EPSController extends Controller
     }
 
     // Success/Fail/Cancel Redirects
-    public function success() { return "Payment Successful!"; }
+    public function success(Request $request) {
+
+        $id = $request->MerchantTransactionId;
+
+        return "Payment Successful! $id";
+    }
     public function fail() { return "Payment Failed!"; }
     public function cancel() { return "Payment Cancelled!"; }
 }

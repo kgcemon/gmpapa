@@ -25,7 +25,7 @@ class EpsHelper
     // Step 1: Get Token
     public function getToken()
     {
-        $xHash = EpsHelper::generateHash($this->hashKey, $this->userName);
+        $xHash = $this->generateHash($this->hashKey, $this->userName);
 
         $response = Http::withHeaders([
             'x-hash' => $xHash,
@@ -56,7 +56,7 @@ class EpsHelper
             return response()->json(['error' => 'Token not found'], 500);
         }
 
-        $xHash = EpsHelper::generateHash($this->hashKey, $merchantTransactionId);
+        $xHash = $this->generateHash($this->hashKey, $merchantTransactionId);
 
         $body = [
             "merchantId" => $this->merchantId,
@@ -90,7 +90,7 @@ class EpsHelper
     // Step 3: Verify Transaction
     public function verifyTransaction($merchantTransactionId)
     {
-        $xHash = EpsHelper::generateHash($this->hashKey, $merchantTransactionId);
+        $xHash = $this->generateHash($this->hashKey, $merchantTransactionId);
 
         $tokenData = $this->getToken();
         $token = $tokenData['token'] ?? null;
