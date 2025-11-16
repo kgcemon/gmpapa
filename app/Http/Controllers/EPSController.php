@@ -84,12 +84,16 @@ class EPSController extends Controller
 
         $url = $this->baseUrl . "/EPSEngine/CheckMerchantTransactionStatus?merchantTransactionId=$merchantTransactionId";
 
+        $order = Order::where('status', 'Pending Payment')->where('transaction_id', $merchantTransactionId)->first();
+
         $response = Http::withHeaders([
             'x-hash' => $xHash,
             'Authorization' => 'Bearer ' . $token,
         ])->get($url);
 
-        return $response->json();
+        return $response->json([
+            'orderId' => $order->id,
+        ]);
     }
 
     // Success/Fail/Cancel Redirects
