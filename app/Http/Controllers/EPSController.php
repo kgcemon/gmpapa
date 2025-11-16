@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Helpers\EpsHelper;
 use Illuminate\Support\Facades\Http;
@@ -94,9 +95,17 @@ class EPSController extends Controller
     // Success/Fail/Cancel Redirects
     public function success(Request $request) {
 
-        $id = $request->MerchantTransactionId;
+        $trXid = $request->MerchantTransactionId ?? null;
 
-        return "Payment Successful! $id";
+        if ($trXid != null) {
+            $order = Order::where('status', 'Pending Payment')->where('transaction_id', $trXid)->first();
+            if ($order != null) {
+                $data = $this->verifyTransaction($trXid);
+                return $data['Status'];
+            }
+        }
+
+        return "Payment Successful! $trXid";
     }
     public function fail() { return "Payment Failed!"; }
     public function cancel() { return "Payment Cancelled!"; }
