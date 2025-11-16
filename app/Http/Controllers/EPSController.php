@@ -52,7 +52,7 @@ class EPSController extends Controller
             "merchantTransactionId" => $merchantTransactionId,
             "transactionTypeId" => 1, // 1=Web
             "totalAmount" => 5.00,
-            "successUrl" => route('eps.success'),
+            "successUrl" => 'https://freefirebd.com/success',
             "failUrl" => route('eps.fail'),
             "cancelUrl" => route('eps.cancel'),
             "customerName" => "Test User",
