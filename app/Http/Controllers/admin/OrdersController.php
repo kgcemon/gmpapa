@@ -50,7 +50,7 @@ class OrdersController extends Controller
         try {
             // ✅ Validate request
             $validated = $request->validate([
-                'status' => 'required|in:hold,processing,Delivery Running,delivered,cancelled,refunded',
+                'status' => 'required|in:hold,processing,Delivery Running,delivered,cancelled,refunded,Pending Payment',
                 'order_note' => 'nullable|string|max:500',
             ]);
 
@@ -143,7 +143,7 @@ class OrdersController extends Controller
 
         $order = Order::findOrFail($id);
 
-        $statuses = ['hold', 'processing', 'Delivery Running', 'delivered', 'cancelled'];
+        $statuses = ['hold', 'processing', 'Delivery Running', 'delivered', 'cancelled', 'Pending Payment'];
 
         return view('admin.orders.edit', compact('order', 'statuses'));
     }
