@@ -65,7 +65,7 @@ class EpsHelper
             "merchantTransactionId" => $merchantTransactionId,
             "transactionTypeId" => 1,
             "totalAmount" => $amount,
-            "successUrl" => route('eps.success'),
+            "successUrl" => 'https://freefirebd.com/success',
             "failUrl" => route('eps.fail'),
             "cancelUrl" => route('eps.cancel'),
             "customerName" => $name,
