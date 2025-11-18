@@ -31,7 +31,7 @@ class OrdersController extends Controller
             });
         }
 
-        $orders = $query->orderByDesc('id')->paginate(10)->appends($request->all());
+        $orders = $query->orderByDesc('id')->paginate(50)->appends($request->all());
         return view('admin.orders.index', compact('orders'));
     }
 
