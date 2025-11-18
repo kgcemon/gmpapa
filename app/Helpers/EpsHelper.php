@@ -20,7 +20,7 @@ class EpsHelper
     private $userName = "support@vertexbazaar.com";
     private $password = "VertexTraders#09";
     private $merchantId = "7df25e31-cc32-47dc-a1e3-a4bf651b3471";
-    private $storeId = "f48574ea-3f1e-43eb-99e4-3fe5db1ef140";
+    private $storeId = "868d063c-b6cb-41d8-81c0-4cca196af24a";
 
     // Step 1: Get Token
     public function getToken()
