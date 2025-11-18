@@ -14,7 +14,7 @@ class CodesController extends Controller
     // Show all products
     public function index()
     {
-        $products = Product::where('name', '!=', 'Wallet')->with('items')->orderby('sort')->paginate(100);
+        $products = Product::where('name', '!=', 'Wallet')->with('items')->orderby('sort')->paginate(10);
         return view('admin.pages.codes.index', compact('products'));
     }
 
@@ -89,7 +89,7 @@ class CodesController extends Controller
             $query->where('status', $request->status);
         }
 
-        $codes = $query->orderBy('id', 'desc')->paginate(5)->withQueryString();
+        $codes = $query->orderBy('id', 'desc')->paginate(100)->withQueryString();
 
         $products = Product::orderBy('sort')->get();
 
