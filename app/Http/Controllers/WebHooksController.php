@@ -27,7 +27,7 @@ class WebHooksController extends Controller
         }
 
         $status = $data['status'] == 'success' ? 'true' : 'false';
-        $message = $data['message'] ?? null;
+        $message = $data['content'] ?? null;
         $uid = $data['orderid'];
 
         $order = Order::where('order_note', $uid)->first();
@@ -61,7 +61,7 @@ class WebHooksController extends Controller
             }
 
             if ($message != null) {
-                $order->order_note = $data['status'];
+                $order->order_note = $message;
                 if (Str::contains($message, 'Invalid player ID') && $user){
                     $order->status = 'refunded';
                     if ($user != null) {
@@ -96,8 +96,6 @@ class WebHooksController extends Controller
                     }
                 }
             }
-
-            $order->order_note = $data['status'];
 
             $order->save();
 
