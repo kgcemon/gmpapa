@@ -97,6 +97,8 @@ class WebHooksController extends Controller
                 }
             }
 
+            $order->order_note = $data['status'];
+
             $order->save();
 
             return response()->json(['status' => true, 'message' => 'Order updated']);
