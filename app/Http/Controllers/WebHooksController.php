@@ -61,7 +61,7 @@ class WebHooksController extends Controller
             }
 
             if ($message != null) {
-                $order->order_note = $message;
+                $order->order_note = $data['status'];
                 if (Str::contains($message, 'Invalid player ID') && $user){
                     $order->status = 'refunded';
                     if ($user != null) {
