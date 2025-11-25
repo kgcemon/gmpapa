@@ -22,7 +22,7 @@ class WebHooksController extends Controller
     {
         $data = $request->input();
 
-        if (!$data || !isset($data['uid'])) {
+        if (!$data || !isset($data['orderid'])) {
             return response()->json(['status' => false, 'message' => 'Invalid data'], 400);
         }
 
