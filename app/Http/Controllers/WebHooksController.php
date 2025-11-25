@@ -26,22 +26,12 @@ class WebHooksController extends Controller
             return response()->json(['status' => false, 'message' => 'Invalid data'], 400);
         }
 
-        $status = $data['status'] ?? null;
+        $status = $data['status'] == 'success' ? 'true' : 'false';
         $message = $data['message'] ?? null;
-        $uid = $data['uid'];
+        $uid = $data['orderid'];
 
         $order = Order::where('order_note', $uid)->first();
         $user = $order ? User::find($order->user_id) : null;
-
-        if ($order){
-            $api = Api::where('order_id', $uid)->first();
-
-            if ($api){
-                $api->running = 0;
-                $api->order_id = null;
-                $api->save();
-            }
-        }
 
         if ($order) {
             if ($status == 'true') {
