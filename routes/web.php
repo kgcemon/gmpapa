@@ -34,6 +34,8 @@ Route::middleware('auth')->prefix('admin')->as('admin.')->group(function () {
 
     // Profile Page
     Route::get('profile', [ProfileController::class, 'show'])->name('profile');
+    Route::put('update', [ProfileController::class, 'update'])
+        ->name('admin.password.update');
 
     // Orders
     Route::get('orders', [\App\Http\Controllers\admin\OrdersController::class, 'index'])->name('orders.index');
