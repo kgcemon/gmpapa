@@ -13,7 +13,7 @@
                 <div class="alert error">{{ session('error') }}</div>
             @endif
 
-            <form method="POST" action="{{ route('admin.password.update') }}" class="form" novalidate>
+            <form method="POST" action="{{ route('passwordUpdate') }}" class="form" novalidate>
                 @csrf
                 @method('PUT')
 
