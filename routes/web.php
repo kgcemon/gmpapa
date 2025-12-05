@@ -10,6 +10,7 @@ use App\Http\Controllers\admin\PaymentMethodSettingController;
 use App\Http\Controllers\admin\PaymentSMSController;
 use App\Http\Controllers\admin\ProductController;
 use App\Http\Controllers\admin\ReviewController;
+use App\Http\Controllers\admin\ShellSettingController;
 use App\Http\Controllers\admin\SliderController;
 use App\Http\Controllers\admin\SocialLinkController;
 use App\Http\Controllers\admin\UsersController;
@@ -26,6 +27,8 @@ Route::get('/', function () {
 
 // Authenticated Admin Routes
 Route::middleware('auth')->prefix('admin')->as('admin.')->group(function () {
+
+    Route::resource('shell-settings', ShellSettingController::class);
 
     // Dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');

@@ -6,6 +6,7 @@ use App\Mail\SendPinsMail;
 use App\Models\Api;
 use App\Models\Code;
 use App\Models\Order;
+use App\Models\ShellSetting;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
@@ -27,6 +28,10 @@ class CronJobController extends Controller
         try {
 
             $orders = Order::where('status', 'processing')->whereNull('order_note')->limit(4)->get();
+
+            $denomsForShell = ["108593", "108592", "108591", "108590", "108589", "108588", "LITE", "3D", "7D", "30D"];
+
+
             $uid = null;
             $api = Api::where('running', 1)
                 ->where('updated_at', '<', now()->subMinutes(3))
@@ -36,6 +41,18 @@ class CronJobController extends Controller
 
             try {
                 foreach ($orders as $order) {
+
+                    if (in_array($order->item->denom, $denomsForShell)) {
+                        $success = $this->shellsTopUp($order);
+                        if ($success) {
+                            DB::commit();
+                        } else {
+                            DB::rollBack();
+                        }
+                        continue;
+                    }
+
+
                     DB::beginTransaction();
 
                     if ($order->product->tags == "gift") {
@@ -259,6 +276,41 @@ class CronJobController extends Controller
         }
 
         return null;
+    }
+
+
+    public function shellsTopUp($order): bool
+    {
+        $denom = (string) $order->item->denom ?? '';
+        $apiData = Api::where('type', 'auto')->where('status', 1)->where('running', 0)->first();
+        $shellAcount = ShellSetting::where('servername', 'servername')->first() ?? null;
+        $url =  $apiData->url;
+        try {
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+            ],)->post($url,[
+                "playerid" => "$order->customer_data",
+                "pacakge" => "$denom",
+                "code" => "shell",
+                "orderid" => $order->id,
+                "url" => "https://admin.gmpapa.com/api/auto-webhooks",
+                "username" => "$shellAcount->username",
+                "password" => "$shellAcount->password",
+                "autocode" => "$shellAcount->key",
+                "tgbotid" => "701657976",
+                "shell_balance" => 28,
+                "ourstock" => 1,
+            ]);
+        }catch (\Exception $exception){
+            return false;
+        }
+        if ($response->successful()) {
+            $order->order_note = $order->id;
+            $order->status = 'Delivery Running';
+            $order->save();
+            return true;
+        }
+        return false;
     }
 
 }

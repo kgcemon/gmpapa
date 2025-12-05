@@ -191,6 +191,7 @@
                             <li><a href="/admin/payment-methods"><span class="sub-item {{ Str::contains(request()->path(), 'payment-methods') ? 'active' : '' }}">Payment Setting</span></a></li>
                             <li><a href="/admin/notice"><span class="sub-item">Notice Settings</span></a></li>
                             <li><a href="/admin/apis"><span class="sub-item">Api Settings</span></a></li>
+                            <li><a href="/admin/shell-settings"><span class="sub-item">Shell Settings</span></a></li>
                             <li><a href="/admin/helpline"><span class="sub-item">Helpline Settings</span></a></li>
                         </ul>
                     </div>
