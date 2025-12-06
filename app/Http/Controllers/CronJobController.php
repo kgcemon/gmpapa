@@ -43,7 +43,6 @@ class CronJobController extends Controller
                 foreach ($orders as $order) {
 
                     if (in_array($order->item->denom, $denomsForShell)) {
-                        dd('ddd');
                         $success = $this->shellsTopUp($order);
                         if ($success) {
                             DB::commit();
@@ -286,6 +285,7 @@ class CronJobController extends Controller
         $apiData = Api::where('type', 'auto')->where('status', 1)->where('running', 0)->first();
         $shellAcount = ShellSetting::where('servername', 'servername')->first() ?? null;
         $url =  $apiData->url;
+        dd($url);
         try {
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
