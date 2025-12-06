@@ -14,7 +14,7 @@ class ShellSettingController extends Controller
     public function index()
     {
         $shells = ShellSetting::latest()->get();
-        return view('admin.shell.index', compact('shells'));
+        return view('admin.shell-settings', compact('shells'));
     }
 
     /**
