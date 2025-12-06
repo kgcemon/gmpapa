@@ -289,7 +289,7 @@ class CronJobController extends Controller
         try {
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
-            ],)->post($url,[
+            ])->post($url,[
                 "playerid" => "$order->customer_data",
                 "pacakge" => "$denom",
                 "code" => "shell",
@@ -302,6 +302,7 @@ class CronJobController extends Controller
                 "shell_balance" => 28,
                 "ourstock" => 1,
             ]);
+            dd($response);
         }catch (\Exception $exception){
             return false;
         }
