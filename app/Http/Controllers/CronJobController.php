@@ -283,7 +283,7 @@ class CronJobController extends Controller
     {
         $denom = (string) $order->item->denom ?? '';
         $apiData = Api::where('type', 'auto')->where('status', 1)->where('running', 0)->first();
-        $shellAcount = ShellSetting::where('servername', 'servername')->first() ?? null;
+        $shellAcount = ShellSetting::where('servername', 'BD')->first() ?? null;
         $url =  $apiData->url;
 
         try {
