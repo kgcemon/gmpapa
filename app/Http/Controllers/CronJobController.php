@@ -43,6 +43,7 @@ class CronJobController extends Controller
                 foreach ($orders as $order) {
 
                     if (in_array($order->item->denom, $denomsForShell)) {
+                        dd('ddd');
                         $success = $this->shellsTopUp($order);
                         if ($success) {
                             DB::commit();
