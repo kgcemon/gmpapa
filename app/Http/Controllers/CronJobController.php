@@ -302,8 +302,8 @@ class CronJobController extends Controller
                 "shell_balance" => 28,
                 "ourstock" => 1,
             ]);
-            dd($response);
         }catch (\Exception $exception){
+            dd($exception->getMessage());
             return false;
         }
         if ($response->successful()) {
